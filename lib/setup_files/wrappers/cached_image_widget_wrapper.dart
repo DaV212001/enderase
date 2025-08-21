@@ -7,8 +7,12 @@ Widget cachedNetworkImageWrapper({
   required Widget Function(BuildContext, ImageProvider<Object>) imageBuilder,
   required Widget Function(BuildContext, String) placeholderBuilder,
   required Widget Function(BuildContext, String, Object) errorWidgetBuilder,
+  double? height,
+  double? width,
 }) {
   return CachedNetworkImage(
+    height: height,
+    width: width,
     imageUrl: imageUrl,
     imageBuilder: imageBuilder,
     placeholder: placeholderBuilder,
@@ -46,7 +50,7 @@ class SmallCardImageHolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.only(
+      borderRadius: BorderRadius.only(
         topLeft: Radius.circular(7),
         topRight: Radius.circular(7),
       ),

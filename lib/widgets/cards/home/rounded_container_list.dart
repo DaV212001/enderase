@@ -1,10 +1,12 @@
 import 'package:enderase/constants/constants.dart';
+import 'package:enderase/controllers/theme_mode_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RoundedListWithCount extends StatelessWidget {
   final List<String> items;
 
-  const RoundedListWithCount({Key? key, required this.items}) : super(key: key);
+  const RoundedListWithCount({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class RoundedListWithCount extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         List<Widget> visibleItems = [];
-        if (items.length <= 2) {
+        if (items.length <= 3) {
           visibleItems = items
               .map((item) => _buildItem(item, itemWidth))
               .toList();
@@ -25,7 +27,7 @@ class RoundedListWithCount extends StatelessWidget {
           ];
         }
 
-        return Wrap(spacing: 8, runSpacing: 8, children: visibleItems);
+        return Wrap(spacing: 8, runSpacing: 2, children: visibleItems);
       },
     );
   }
@@ -42,14 +44,20 @@ class RoundedListWithCount extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       // alignment: Alignment.center,
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: isMore ? Colors.grey : Colors.blue[900],
-          fontSize: 9,
-        ),
-      ),
+      child: Obx(() {
+        return Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isMore
+                ? Colors.grey
+                : ThemeModeController.isLightTheme.value
+                ? Colors.blue[900]
+                : Colors.blue,
+            fontSize: 9,
+          ),
+        );
+      }),
     );
   }
 }

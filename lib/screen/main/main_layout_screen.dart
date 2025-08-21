@@ -17,7 +17,7 @@ class MainLayoutScreen extends StatelessWidget {
     return Scaffold(
       body: PersistentTabView(
         controller: mainLayoutController.bottomTabController,
-        tabs: mainLayoutController.tabs,
+        tabs: mainLayoutController.tabs(context),
         navBarBuilder: (navBarConfig) => Style8BottomNavBar(
           navBarConfig: navBarConfig,
           navBarDecoration: NavBarDecoration(

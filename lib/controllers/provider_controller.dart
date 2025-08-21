@@ -2,15 +2,15 @@ import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:enderase/setup_files/error_data.dart';
 import 'package:enderase/setup_files/error_utils.dart';
 import 'package:enderase/setup_files/templates/dio_template.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../models/provider.dart';
 
 class ProviderController extends GetxController {
+  static String tag = 'provider';
+
   // Results
   var providers = <Provider>[].obs;
-  final ScrollController scrollController = ScrollController();
   // Loading states
   var loadingProviders = ApiCallStatus.holding.obs; // for initial / refresh
   var loadingMore = ApiCallStatus.holding.obs; // for pagination
@@ -20,7 +20,7 @@ class ProviderController extends GetxController {
 
   // Pagination
   int _page = 1;
-  int _perPage = 15;
+  final int _perPage = 15;
   bool hasMore = true;
 
   // Base path
@@ -29,14 +29,8 @@ class ProviderController extends GetxController {
   @override
   void onInit() {
     fetchProviders(refresh: true);
-    scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent - 200 &&
-          hasMore &&
-          loadingMore.value != ApiCallStatus.loading) {
-        loadMoreProviders();
-      }
-    });
+    fetchTopRatedProviders();
+    fetchProfessionalProviders();
     super.onInit();
   }
 
@@ -46,7 +40,6 @@ class ProviderController extends GetxController {
 
     // always include categories
     params['include'] = 'categories';
-    params['sort'] = '-rating';
 
     // pagination
     params['page'] = page.toString();
@@ -131,5 +124,74 @@ class ProviderController extends GetxController {
     // avoid duplicate calls
     if (loadingMore.value == ApiCallStatus.loading) return;
     await fetchProviders(refresh: false);
+  }
+
+  final topRatedProviders = <Provider>[].obs;
+  final loadingTopRatedProviders = ApiCallStatus.holding.obs;
+  final errorTopRatedProviders = Rxn<ErrorData>();
+
+  final professionalProviders = <Provider>[].obs;
+  final loadingProfessionalProviders = ApiCallStatus.holding.obs;
+  final errorProfessionalProviders = Rxn<ErrorData>();
+
+  Future<void> fetchTopRatedProviders() async {
+    try {
+      loadingTopRatedProviders.value = ApiCallStatus.loading;
+
+      final path = '$_basePath?include=categories&sort=-rating';
+
+      await DioService.dioGet(
+        path: path,
+        onSuccess: (response) {
+          final List newItems = (response.data['data'] as List?) ?? [];
+          final parsed = newItems.map((e) => Provider.fromJson(e)).toList();
+
+          topRatedProviders.value = parsed;
+          loadingTopRatedProviders.value = ApiCallStatus.success;
+        },
+        onFailure: (error, response) async {
+          loadingTopRatedProviders.value = ApiCallStatus.error;
+          errorTopRatedProviders.value = await ErrorUtil.getErrorData(
+            error.toString(),
+          );
+        },
+      );
+    } catch (e) {
+      loadingTopRatedProviders.value = ApiCallStatus.error;
+      errorTopRatedProviders.value = await ErrorUtil.getErrorData(e.toString());
+    }
+  }
+
+  Future<void> fetchProfessionalProviders() async {
+    try {
+      loadingProfessionalProviders.value = ApiCallStatus.loading;
+
+      final path = '$_basePath?include=certifications,categories';
+
+      await DioService.dioGet(
+        path: path,
+        onSuccess: (response) {
+          final List newItems = (response.data['data'] as List?) ?? [];
+          final parsed = newItems
+              .map((e) => Provider.fromJson(e))
+              .where((provider) => (provider.certifications ?? []).isNotEmpty)
+              .toList();
+
+          professionalProviders.value = parsed;
+          loadingProfessionalProviders.value = ApiCallStatus.success;
+        },
+        onFailure: (error, response) async {
+          loadingProfessionalProviders.value = ApiCallStatus.error;
+          errorProfessionalProviders.value = await ErrorUtil.getErrorData(
+            error.toString(),
+          );
+        },
+      );
+    } catch (e) {
+      loadingProfessionalProviders.value = ApiCallStatus.error;
+      errorProfessionalProviders.value = await ErrorUtil.getErrorData(
+        e.toString(),
+      );
+    }
   }
 }

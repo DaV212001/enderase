@@ -1,29 +1,161 @@
+import 'package:enderase/models/certifications.dart';
+import 'package:get/get.dart';
+
 import 'category.dart';
 
 class Provider {
-  final int id;
-  final String firstName;
-  final String middleName;
-  final String lastName;
+  final int? id;
+  final String? firstName;
+  final String? middleName;
+  final String? lastName;
   final String? profilePicture;
-  final String city;
-  final String subcity;
-  final String woreda;
-  final int rating;
-  final List<Category> categories;
+  final String? cityEn;
+  final String? subcityEn;
+  final String? cityAm;
+  final String? subCityAm;
+  final String? woreda;
+  final double? rating;
+  final List<Category>? categories;
+  final List<Certifications>? certifications;
 
   Provider({
-    required this.id,
-    required this.firstName,
-    required this.middleName,
-    required this.lastName,
-    required this.profilePicture,
-    required this.city,
-    required this.subcity,
-    required this.woreda,
-    required this.rating,
-    required this.categories,
+    this.cityAm,
+    this.subCityAm,
+    this.id,
+    this.firstName,
+    this.middleName,
+    this.lastName,
+    this.profilePicture,
+    this.cityEn,
+    this.subcityEn,
+    this.woreda,
+    this.rating,
+    this.categories,
+    this.certifications,
   });
+
+  static List<Provider> providers = [
+    Provider(
+      id: 1,
+      firstName: 'Margot',
+      middleName: 'Bartell',
+      lastName: 'Bartell',
+      profilePicture:
+          'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+      cityEn: 'location',
+      cityAm: 'location',
+      subCityAm: 'location',
+      subcityEn: '',
+      woreda: '08',
+      rating: 5,
+      categories: [
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+      ],
+      certifications: Certifications.certifications,
+    ),
+    Provider(
+      id: 1,
+      firstName: 'Margot',
+      middleName: 'Bartell',
+      lastName: 'Bartell',
+      cityAm: 'location',
+      subCityAm: 'location',
+      profilePicture:
+          'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+      cityEn: 'location',
+      subcityEn: '',
+      woreda: '08',
+      rating: 5,
+      categories: [
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+      ],
+      certifications: Certifications.certifications,
+    ),
+    Provider(
+      id: 1,
+      firstName: 'Margot',
+      middleName: 'Bartell',
+      cityAm: 'location',
+      subCityAm: 'location',
+      lastName: 'Bartell',
+      profilePicture:
+          'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+      cityEn: 'location',
+      subcityEn: '',
+      woreda: '08',
+      rating: 5,
+      categories: [
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+      ],
+      certifications: Certifications.certifications,
+    ),
+    Provider(
+      id: 1,
+      firstName: 'Margot',
+      middleName: 'Bartell',
+      lastName: 'Bartell',
+      cityAm: 'location',
+      subCityAm: 'location',
+      profilePicture:
+          'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+      cityEn: 'location',
+      subcityEn: '',
+      woreda: '08',
+      rating: 5,
+      categories: [
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+      ],
+      certifications: Certifications.certifications,
+    ),
+    Provider(
+      id: 1,
+      firstName: 'Margot',
+      middleName: 'Bartell',
+      lastName: 'Bartell',
+      cityAm: 'location',
+      subCityAm: 'location',
+      profilePicture:
+          'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+      cityEn: 'location',
+      subcityEn: '',
+      woreda: '08',
+      rating: 5,
+      categories: [
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+      ],
+      certifications: Certifications.certifications,
+    ),
+    Provider(
+      id: 1,
+      firstName: 'Margot',
+      middleName: 'Bartell',
+      lastName: 'Bartell',
+      cityAm: 'location',
+      subCityAm: 'location',
+      profilePicture:
+          'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+      cityEn: 'location',
+      subcityEn: '',
+      woreda: '08',
+      rating: 5,
+      categories: [
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+        Category(id: 1, categoryNameAm: 'Nurse', categoryNameEn: 'Nurse'),
+      ],
+      certifications: Certifications.certifications,
+    ),
+  ];
 
   factory Provider.fromJson(Map<String, dynamic> json) {
     return Provider(
@@ -31,18 +163,29 @@ class Provider {
       firstName: (json['first_name'] ?? 'Unknown') + ' ',
       middleName: json['middle_name'] ?? 'Unknown',
       lastName: json['last_name'] ?? 'Unknown',
-      profilePicture: json['profile_picture'],
-      city: json['city'] ?? '',
-      subcity: json['subcity'] ?? '',
+      profilePicture: json['profile_picture'] ?? '',
+      cityEn: json['city'] ?? '',
+      cityAm: json['city_am'] ?? '',
+      subcityEn: json['subcity'] ?? '',
+      subCityAm: json['subcity_am'] ?? '',
       woreda: json['woreda'] ?? '',
-      rating: json['rating'] is int
+      rating: json['rating'] == null
+          ? 0.0
+          : json['rating'] is double
           ? json['rating']
-          : int.tryParse('${json['rating']}') ?? 0,
-      categories:
-          (json['categories'] as List?)
-              ?.map((c) => Category.fromJson(c))
-              .toList() ??
-          [],
+          : double.tryParse('${json['rating']}') ?? 0,
+      categories: json['categories'] == null
+          ? []
+          : (json['categories'] as List?)
+                    ?.map((c) => Category.fromJson(c))
+                    .toList() ??
+                [],
+      certifications: json['certifications'] == null
+          ? []
+          : (json['certifications'] as List?)
+                    ?.map((c) => Certifications.fromJson(c))
+                    .toList() ??
+                [],
     );
   }
 
@@ -53,9 +196,25 @@ class Provider {
     'last_name': lastName,
     'profile_picture': profilePicture,
     'city': city,
-    'subcity': subcity,
+    'subcity': subcityEn,
     'woreda': woreda,
     'rating': rating,
-    'categories': categories.map((c) => c.toJson()).toList(),
+    'categories': categories?.map((c) => c.toJson()).toList(),
   };
+
+  String get city {
+    if (Get.locale!.languageCode == 'en') {
+      return cityEn!;
+    } else {
+      return cityAm!;
+    }
+  }
+
+  String get subcity {
+    if (Get.locale!.languageCode == 'en') {
+      return subcityEn!;
+    } else {
+      return subCityAm!;
+    }
+  }
 }

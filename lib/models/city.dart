@@ -1,10 +1,25 @@
+import 'package:get/get.dart';
+
 class City {
   final int? id;
-  final String? name;
+  final String? nameEn;
+  final String? nameAm;
 
-  const City({this.id, this.name});
+  const City({this.nameAm, this.id, this.nameEn});
 
   factory City.fromJson(Map<String, dynamic> json) {
-    return City(id: json['id'], name: json['city_name']);
+    return City(
+      id: json['id'],
+      nameEn: json['city_name'],
+      nameAm: json['city_name_am'],
+    );
+  }
+
+  String get name {
+    if (Get.locale!.languageCode == 'en') {
+      return nameEn!;
+    } else {
+      return nameAm!;
+    }
   }
 }

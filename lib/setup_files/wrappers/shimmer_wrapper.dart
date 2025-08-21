@@ -1,4 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmerWrapper extends StatelessWidget {
@@ -139,9 +142,37 @@ class ShimmerWrapper extends StatelessWidget {
           ),
         ),
       );
-    }
-    // Handle SizedBox widgets
-    else if (widget is SizedBox) {
+    } else if (widget is AutoSizeText) {
+      final TextStyle? style = widget.style;
+      final double fontSize =
+          style?.fontSize ?? 14.0; // Use fontSize or default 14.0
+      final double height = fontSize * 1.2; // Adjust height based on font size
+      final double width = _calculateTextWidth(
+        widget.data ?? '',
+        style,
+        context,
+      ); // Calculate width based on text
+
+      return Shimmer.fromColors(
+        baseColor:
+            baseColor ??
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+        highlightColor:
+            highlightColor ??
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            width: width, // Width based on text length
+            height: height, // Height based on font size
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+              color: Colors.grey[300],
+            ),
+          ),
+        ),
+      );
+    } else if (widget is Image) {
       return Shimmer.fromColors(
         baseColor:
             baseColor ??
@@ -152,7 +183,7 @@ class ShimmerWrapper extends StatelessWidget {
         child: Container(
           width: widget.width,
           height: widget.height,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.grey[300],
@@ -161,6 +192,32 @@ class ShimmerWrapper extends StatelessWidget {
           ),
         ),
       );
+    } else if (widget is CachedNetworkImage) {
+      return Shimmer.fromColors(
+        baseColor:
+            baseColor ??
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+        highlightColor:
+            highlightColor ??
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+        child: Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ),
+        ),
+      );
+    }
+    // Handle SizedBox widgets
+    else if (widget is SizedBox) {
+      return widget.child != null
+          ? _buildShimmerLayout(widget.child!, context)
+          : SizedBox(height: widget.height, width: widget.width);
     } else if (widget is CircleAvatar) {
       return Shimmer.fromColors(
         baseColor:
@@ -193,6 +250,20 @@ class ShimmerWrapper extends StatelessWidget {
           size: widget.size ?? IconTheme.of(context).size ?? 24.0,
           color: Colors.grey[300], // solid placeholder color
         ),
+      );
+    } else if (widget is RatingBarIndicator) {
+      return _buildShimmerLayout(
+        Row(
+          children: List.generate(
+            widget.itemCount,
+            (index) => Icon(
+              Icons.star_rounded,
+              color: Theme.of(context).primaryColor,
+              size: widget.itemSize,
+            ),
+          ),
+        ),
+        context,
       );
     }
     // If it's a different type of widget, return a grey box as a placeholder

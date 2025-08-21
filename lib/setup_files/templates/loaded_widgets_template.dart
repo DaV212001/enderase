@@ -18,7 +18,7 @@ class LoadedWidget extends StatelessWidget {
     this.errorData,
     required this.child,
     required this.loadingChild,
-    required this.errorChild,
+    this.errorChild,
     required this.onReload,
   });
 
@@ -66,6 +66,8 @@ class LoadedListWidget extends StatelessWidget {
 
   ///What you want to display when the list is empty
   final Widget onEmpty;
+
+  final bool? scrollToRefresh;
   const LoadedListWidget({
     super.key,
     required this.apiCallStatus,
@@ -76,33 +78,61 @@ class LoadedListWidget extends StatelessWidget {
     required this.list,
     required this.onEmpty,
     required this.onReload,
+    this.scrollToRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: onReload,
-      child: apiCallStatus == ApiCallStatus.loading
-          ? loadingChild
-          : apiCallStatus == ApiCallStatus.error
-          ? Center(
-              child:
-                  errorChild ??
-                  ErrorCard(errorData: errorData!, refresh: onReload),
-            )
-          : list.isEmpty
-          ? onEmpty
-          : SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  RefreshIndicator(onRefresh: onReload, child: child),
-                  SizedBox(height: 70.h),
-                ],
-              ),
-            ),
-    );
+    return scrollToRefresh == false
+        ? apiCallStatus == ApiCallStatus.loading
+              ? loadingChild
+              : apiCallStatus == ApiCallStatus.error
+              ? Center(
+                  child:
+                      errorChild ??
+                      ErrorCard(errorData: errorData!, refresh: onReload),
+                )
+              : list.isEmpty
+              ? onEmpty
+              : SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      scrollToRefresh == false
+                          ? child
+                          : RefreshIndicator(onRefresh: onReload, child: child),
+                    ],
+                  ),
+                )
+        : RefreshIndicator(
+            onRefresh: onReload,
+            child: apiCallStatus == ApiCallStatus.loading
+                ? loadingChild
+                : apiCallStatus == ApiCallStatus.error
+                ? Center(
+                    child:
+                        errorChild ??
+                        ErrorCard(errorData: errorData!, refresh: onReload),
+                  )
+                : list.isEmpty
+                ? onEmpty
+                : SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        scrollToRefresh == false
+                            ? child
+                            : RefreshIndicator(
+                                onRefresh: onReload,
+                                child: child,
+                              ),
+                        SizedBox(height: 70.h),
+                      ],
+                    ),
+                  ),
+          );
   }
 }
 

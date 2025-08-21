@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:enderase/setup_files/wrappers/shimmer_wrapper.dart';
+import 'package:enderase/widgets/cards/home/rounded_container_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../../setup_files/wrappers/cached_image_widget_wrapper.dart';
-import '../home/rounded_container_list.dart';
 
 class ProviderCard extends StatelessWidget {
   const ProviderCard({
@@ -41,49 +41,69 @@ class ProviderCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(7),
-                    topRight: Radius.circular(7),
-                  ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(7),
-                    topRight: Radius.circular(7),
-                  ),
-                  child: cachedNetworkImageWrapper(
-                    imageUrl: image,
-                    // width: MediaQuery.of(context).size.width * 0.4,
-                    // height: MediaQuery.of(context).size.height * 0.15,
-                    // fit: BoxFit.cover,
-                    imageBuilder: (context, imageProvider) {
-                      return SmallCardImageHolder(
-                        image: Image.network(
-                          image,
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          height: MediaQuery.of(context).size.height * 0.12,
-                          fit: BoxFit.cover,
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(7),
+                          topRight: Radius.circular(7),
                         ),
-                      );
-                    },
-                    placeholderBuilder: (context, string) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        height: MediaQuery.of(context).size.height * 0.12,
-                        color: Colors.grey,
-                      );
-                    },
-                    errorWidgetBuilder: (context, path, obj) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        height: MediaQuery.of(context).size.height * 0.12,
-                        color: Colors.grey,
-                      );
-                    },
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(7),
+                          topRight: Radius.circular(7),
+                        ),
+                        child: cachedNetworkImageWrapper(
+                          imageUrl: image,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          // fit: BoxFit.cover,
+                          imageBuilder: (context, imageProvider) {
+                            return SmallCardImageHolder(
+                              image: Image.network(
+                                image,
+                                // width: MediaQuery.of(context).size.width * 0.45,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.12,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                          placeholderBuilder: (context, string) {
+                            return Container(
+                              // width: MediaQuery.of(context).size.width * 0.45,
+                              height: MediaQuery.of(context).size.height * 0.12,
+                              color: Colors.grey,
+                            );
+                          },
+                          errorWidgetBuilder: (context, path, obj) {
+                            return Container(
+                              height: MediaQuery.of(context).size.width * 0.12,
+                              // width: MediaQuery.of(context).size.width * 0.15,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(7),
+                                  topRight: Radius.circular(7),
+                                ),
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                // color: Theme.of(context).primaryColor,
+                              ),
+                              child: Icon(
+                                Icons.person_2_rounded,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -92,12 +112,13 @@ class ProviderCard extends StatelessWidget {
                   children: [
                     AutoSizeText(
                       name,
-                      maxFontSize: 11,
+                      maxFontSize: 13,
                       minFontSize: 9,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
                           Icons.location_on_outlined,
@@ -106,7 +127,7 @@ class ProviderCard extends StatelessWidget {
                         ),
                         SizedBox(
                           width: !isShimmer
-                              ? MediaQuery.of(context).size.width * 0.35
+                              ? MediaQuery.of(context).size.width * 0.5
                               : MediaQuery.of(context).size.width * 0.2,
                           child: AutoSizeText(
                             location,
@@ -146,7 +167,7 @@ class ProviderCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (!isShimmer) RoundedListWithCount(items: categoriesList),
+                    RoundedListWithCount(items: categoriesList),
                   ],
                 ),
               ),

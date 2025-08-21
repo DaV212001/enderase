@@ -6,12 +6,16 @@ import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../controllers/search_screen_controller.dart';
-import '../../../../widgets/cards/home/filter_chip.dart';
-import '../../../../widgets/cards/provider/provider_search_card.dart';
+import '../../../constants/assets.dart';
+import '../../../controllers/search_screen_controller.dart';
+import '../../../models/certifications.dart';
+import '../../../setup_files/error_card.dart';
+import '../../../setup_files/error_data.dart';
+import '../../../widgets/cards/home/filter_chip.dart';
+import '../../../widgets/cards/provider/provider_search_card.dart';
 
 class ProviderSearchFilterScreen extends StatelessWidget {
-  final SearchScreenController providerController = Get.put(
+  final SearchScreenController searchAndFilterController = Get.put(
     SearchScreenController(),
   );
   final CategoryController categoryController = Get.find();
@@ -23,7 +27,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
 
   void _applyNameSearch(String value) {
     final parts = value.trim().split(RegExp(r'\s+'));
-    providerController.applyFilters(
+    searchAndFilterController.applyFilters(
       firstName: parts.isNotEmpty ? parts[0] : '',
       middleName: parts.length > 1 ? parts[1] : '',
     );
@@ -82,7 +86,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                 controller: searchController,
                 onSubmitted: _applyNameSearch,
                 decoration: InputDecoration(
-                  hintText: 'Search providers...',
+                  hintText: 'search'.tr,
                   hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   border: OutlineInputBorder(
@@ -117,7 +121,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
               children: [
                 ActionChip(
                   avatar: const Icon(Icons.filter_list, size: 18),
-                  label: const Text("Filters", style: TextStyle(fontSize: 10)),
+                  label: Text("filters".tr, style: TextStyle(fontSize: 10)),
                   onPressed: () => _showFullFilterDialog(context),
                 ),
                 const SizedBox(width: 8),
@@ -126,12 +130,14 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                 Obx(
                   () => FilterChipLike(
                     icon: Icons.location_city,
-                    label: "City",
-                    isActive: providerController.filterCityId.value != null,
+                    label: "city".tr,
+                    isActive:
+                        searchAndFilterController.filterCityId.value != null,
                     onPressed: () =>
-                        _showDialogForFilter(context, "City", _cityFilter()),
-                    onClear: providerController.filterCityId.value != null
-                        ? () => providerController.clearFilter('city')
+                        _showDialogForFilter(context, "city".tr, _cityFilter()),
+                    onClear:
+                        searchAndFilterController.filterCityId.value != null
+                        ? () => searchAndFilterController.clearFilter('city')
                         : null,
                   ),
                 ),
@@ -142,15 +148,17 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                 Obx(
                   () => FilterChipLike(
                     icon: Icons.star,
-                    label: "Rating",
-                    isActive: providerController.filterRating.value != null,
+                    label: "rating".tr,
+                    isActive:
+                        searchAndFilterController.filterRating.value != null,
                     onPressed: () => _showDialogForFilter(
                       context,
-                      "Rating",
+                      "rating".tr,
                       _ratingFilter(),
                     ),
-                    onClear: providerController.filterRating.value != null
-                        ? () => providerController.clearFilter('rating')
+                    onClear:
+                        searchAndFilterController.filterRating.value != null
+                        ? () => searchAndFilterController.clearFilter('rating')
                         : null,
                   ),
                 ),
@@ -161,15 +169,18 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                 Obx(
                   () => FilterChipLike(
                     icon: Icons.radio_button_checked,
-                    label: "Radius",
-                    isActive: providerController.filterWorkRadius.value != null,
+                    label: "radius".tr,
+                    isActive:
+                        searchAndFilterController.filterWorkRadius.value !=
+                        null,
                     onPressed: () => _showDialogForFilter(
                       context,
-                      "Radius",
+                      "radius".tr,
                       _radiusFilter(),
                     ),
-                    onClear: providerController.filterWorkRadius.value != null
-                        ? () => providerController.clearFilter('radius')
+                    onClear:
+                        searchAndFilterController.filterWorkRadius.value != null
+                        ? () => searchAndFilterController.clearFilter('radius')
                         : null,
                   ),
                 ),
@@ -180,15 +191,19 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                 Obx(
                   () => FilterChipLike(
                     icon: Icons.category,
-                    label: "Category",
-                    isActive: providerController.filterCategoryId.value != null,
+                    label: "category".tr,
+                    isActive:
+                        searchAndFilterController.filterCategoryId.value !=
+                        null,
                     onPressed: () => _showDialogForFilter(
                       context,
-                      "Category",
+                      "category".tr,
                       _categoryFilter(),
                     ),
-                    onClear: providerController.filterCategoryId.value != null
-                        ? () => providerController.clearFilter('category')
+                    onClear:
+                        searchAndFilterController.filterCategoryId.value != null
+                        ? () =>
+                              searchAndFilterController.clearFilter('category')
                         : null,
                   ),
                 ),
@@ -203,7 +218,9 @@ class ProviderSearchFilterScreen extends StatelessWidget {
               children: [
                 Obx(
                   () => Text(
-                    "Found (${providerController.providers.length})",
+                    "found".trParams({
+                      'amount': '${searchAndFilterController.providers.length}',
+                    }),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
@@ -213,27 +230,30 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                 const Spacer(),
                 Obx(
                   () => DropdownButton<String>(
-                    value: providerController.sort.value.isEmpty
+                    value: searchAndFilterController.sort.value.isEmpty
                         ? null
-                        : providerController.sort.value,
-                    hint: const Text('Sort by', style: TextStyle(fontSize: 12)),
-                    items: const [
+                        : searchAndFilterController.sort.value,
+                    hint: Text('sort_by'.tr, style: TextStyle(fontSize: 12)),
+                    items: [
                       DropdownMenuItem(value: '', child: Text('None')),
                       DropdownMenuItem(
                         value: 'first_name',
-                        child: Text('Name', style: TextStyle(fontSize: 12)),
+                        child: Text('name'.tr, style: TextStyle(fontSize: 12)),
                       ),
                       DropdownMenuItem(
                         value: 'rating',
-                        child: Text('Rating', style: TextStyle(fontSize: 12)),
+                        child: Text(
+                          'rating'.tr,
+                          style: TextStyle(fontSize: 12),
+                        ),
                       ),
                       DropdownMenuItem(
                         value: 'city',
-                        child: Text('City', style: TextStyle(fontSize: 12)),
+                        child: Text('city'.tr, style: TextStyle(fontSize: 12)),
                       ),
                     ],
                     onChanged: (value) {
-                      providerController.applyFilters(sortBy: value);
+                      searchAndFilterController.applyFilters(sortBy: value);
                     },
                   ),
                 ),
@@ -244,7 +264,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
           // Provider list with infinite scroll
           Expanded(
             child: Obx(() {
-              if (providerController.loadingProviders.value ==
+              if (searchAndFilterController.loadingProviders.value ==
                   ApiCallStatus.loading) {
                 return ListView.builder(
                   itemCount: 15,
@@ -256,27 +276,47 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                         middleName: 'middleName',
                         lastName: 'lastName',
                         profilePicture: 'profilePicture',
-                        city: 'city',
-                        subcity: 'subcity',
+                        cityEn: 'city',
+                        subcityEn: 'subcity',
+                        cityAm: 'city',
+                        subCityAm: 'city',
                         woreda: 'woreda',
                         rating: 3,
-                        categories: [Category(categoryName: 'categoryName')],
+                        categories: [
+                          Category(
+                            categoryNameEn: 'categoryName',
+                            categoryNameAm: 'categoryNameAm',
+                          ),
+                        ],
+
+                        certifications: Certifications.certifications,
                       ),
                       isShimmer: true,
                     );
                   },
                 );
               }
-              if (providerController.providers.isEmpty) {
-                return const Center(child: Text('No providers found.'));
+              if (searchAndFilterController.providers.isEmpty) {
+                return Center(
+                  child: ErrorCard(
+                    errorData: ErrorData(
+                      title: 'no_providers_found'.tr,
+                      buttonText: 'refresh'.tr,
+                      body: '',
+                      image: Assets.emptyCart,
+                    ),
+                    refresh: () =>
+                        searchAndFilterController.fetchProviders(refresh: true),
+                  ),
+                );
               }
               return ListView.builder(
-                controller: providerController.scrollController,
+                controller: searchAndFilterController.scrollController,
                 itemCount:
-                    providerController.providers.length +
-                    (providerController.hasMore ? 1 : 0),
+                    searchAndFilterController.providers.length +
+                    (searchAndFilterController.hasMore ? 1 : 0),
                 itemBuilder: (context, index) {
-                  if (index == providerController.providers.length) {
+                  if (index == searchAndFilterController.providers.length) {
                     // Loading indicator at bottom for pagination
                     return const Padding(
                       padding: EdgeInsets.all(16),
@@ -284,7 +324,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
                     );
                   }
 
-                  final provider = providerController.providers[index];
+                  final provider = searchAndFilterController.providers[index];
                   return ProviderSearchCard(
                     provider: provider,
                     isShimmer: false,
@@ -317,7 +357,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
         }).toList(),
         onChanged: (value) {
           cityController.selectedCityId.value = value ?? 0;
-          providerController.applyFilters(cityId: value);
+          searchAndFilterController.applyFilters(cityId: value);
           Get.back();
         },
       );
@@ -331,13 +371,13 @@ class ProviderSearchFilterScreen extends StatelessWidget {
         return GestureDetector(
           child: Icon(
             Icons.star,
-            color: providerController.filterRating.value == index + 1
+            color: searchAndFilterController.filterRating.value == index + 1
                 ? Colors.amber
                 : Colors.grey,
             size: 30,
           ),
           onTap: () {
-            providerController.applyFilters(rating: index + 1);
+            searchAndFilterController.applyFilters(rating: index + 1);
             Get.back();
           },
         );
@@ -351,10 +391,11 @@ class ProviderSearchFilterScreen extends StatelessWidget {
         min: 1,
         max: 100,
         divisions: 10,
-        value: (providerController.filterWorkRadius.value ?? 10).toDouble(),
-        label: '${providerController.filterWorkRadius.value ?? 10} km',
+        value: (searchAndFilterController.filterWorkRadius.value ?? 10)
+            .toDouble(),
+        label: '${searchAndFilterController.filterWorkRadius.value ?? 10} km',
         onChanged: (value) {
-          providerController.applyFilters(workRadius: value.toInt());
+          searchAndFilterController.applyFilters(workRadius: value.toInt());
         },
         onChangeEnd: (_) => Get.back(),
       ),
@@ -367,7 +408,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
         return const Center(child: CircularProgressIndicator());
       }
       return DropdownButton<int>(
-        value: providerController.filterCategoryId.value,
+        value: searchAndFilterController.filterCategoryId.value,
         hint: const Text('Select Category'),
         items: categoryController.categories.map((cat) {
           return DropdownMenuItem<int>(
@@ -376,7 +417,7 @@ class ProviderSearchFilterScreen extends StatelessWidget {
           );
         }).toList(),
         onChanged: (value) {
-          providerController.applyFilters(categoryId: value);
+          searchAndFilterController.applyFilters(categoryId: value);
           Get.back();
         },
       );

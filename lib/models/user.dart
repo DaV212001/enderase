@@ -3,6 +3,7 @@ class User {
   final String? firstName;
   final String? middleName;
   final String? lastName;
+  final String? email;
   final String? profilePicture;
   final String? fanNumber;
   final String? primaryPhone;
@@ -22,6 +23,7 @@ class User {
     this.firstName,
     this.middleName,
     this.lastName,
+    this.email,
     this.profilePicture,
     this.fanNumber,
     this.primaryPhone,
@@ -43,6 +45,7 @@ class User {
       firstName: json['first_name'],
       middleName: json['middle_name'],
       lastName: json['last_name'],
+      email: json['email'],
       profilePicture: json['profile_picture'],
       fanNumber: json['fan_number'],
       primaryPhone: json['primary_phone'],

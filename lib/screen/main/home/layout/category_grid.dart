@@ -1,3 +1,5 @@
+import 'package:enderase/constants/assets.dart';
+import 'package:enderase/constants/constants.dart';
 import 'package:enderase/constants/pages.dart';
 import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../controllers/category_controller.dart';
+import '../../../../setup_files/error_card.dart';
+import '../../../../setup_files/error_data.dart';
 import '../../../../setup_files/wrappers/shimmer_wrapper.dart';
 
 /// A widget that displays categories in a paginated grid format.
@@ -35,24 +39,18 @@ class CategoryGrid extends StatelessWidget {
       if (categoryController.categories.isEmpty &&
           categoryController.loadingCategory.value != ApiCallStatus.loading) {
         return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  'assets/images/errors/empty_list.svg',
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  height: MediaQuery.of(context).size.height * 0.3,
-                ),
-                const SizedBox(height: 10),
-                Text('No categories found'),
-                ElevatedButton(
-                  onPressed: categoryController.fetchCategories,
-                  child: Text('Refresh'),
-                ),
-              ],
+          child: ErrorCard(
+            errorData: ErrorData(
+              title: 'no_categories_found'.tr,
+              body: ''.tr,
+              image: Assets.emptyCart,
+              buttonText: 'refresh'.tr,
             ),
+            imageHeight: 90.h,
+            imageWidth: 90.h,
+            buttonHeight: 30.h,
+            buttonWidth: MediaQuery.of(context).size.width * 0.5,
+            refresh: () => categoryController.fetchCategories(),
           ),
         );
       }
@@ -60,7 +58,6 @@ class CategoryGrid extends StatelessWidget {
       // Calculate number of pages
       final totalItems = categoryController.categories.length;
       final totalPages = (totalItems / 6).ceil();
-      final pageController = PageController();
 
       return Padding(
         padding: const EdgeInsets.only(top: 20.0),
@@ -91,14 +88,13 @@ class CategoryGrid extends StatelessWidget {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 2,
+                            crossAxisSpacing: 2,
                             childAspectRatio: 1.5,
                           ),
                       itemBuilder: (context, index) {
                         final category = pageItems[index];
-                        final imagePath =
-                            'assets/images/categories/${category.id}.svg';
+                        final imagePath = '$kApiBaseUrl/${category.image}';
 
                         return GestureDetector(
                           onTap: () {
@@ -112,8 +108,17 @@ class CategoryGrid extends StatelessWidget {
                               Expanded(
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: SvgPicture.asset(
+                                  child: SvgPicture.network(
                                     imagePath,
+                                    placeholderBuilder: (context) => Icon(
+                                      Icons.category,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    errorBuilder:
+                                        (context, error, stackTrace) => Icon(
+                                          Icons.category,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
                                     fit: BoxFit.contain,
                                     width: 20,
                                     height: 20,
@@ -122,7 +127,7 @@ class CategoryGrid extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                category.categoryName ?? '',
+                                category.categoryName,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 textAlign: TextAlign.center,

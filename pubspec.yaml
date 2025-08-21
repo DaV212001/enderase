@@ -50,6 +50,10 @@ dependencies:
   image_picker: ^1.1.2
   auto_size_text: ^3.0.0
   flutter_rating_bar: ^4.0.1
+  dropdown_button2: ^2.3.9
+  enefty_icons: ^1.0.8
+  ionicons: ^0.2.2
+  animated_toggle_switch: ^0.8.5
 
 dev_dependencies:
   flutter_test:
@@ -93,7 +97,7 @@ flutter:
   fonts:
     - family: Lexend
       fonts:
-        - asset: assets/fonts/Lexend-Light.ttf
+        - asset: assets/fonts/Lexend-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

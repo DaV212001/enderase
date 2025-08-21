@@ -16,7 +16,7 @@
 // import '../screens/settings/profile/profile_screen.dart';
 // import '../screens/settings/settings_screen.dart';
 
-import 'package:enderase/screen/main/home/layout/search_screen.dart';
+import 'package:enderase/screen/main/search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 

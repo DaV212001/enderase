@@ -70,13 +70,13 @@ class ProfileListCard extends StatelessWidget {
             margin: EdgeInsets.only(top: isFirstTile == true ? 16.0 : 0.0),
             decoration: BoxDecoration(
               borderRadius: borderRadius,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: blurRadius,
-                  color: shadowColor,
-                  offset: boxShadowOffset,
-                ),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     blurRadius: blurRadius,
+              //     color: shadowColor,
+              //     offset: boxShadowOffset,
+              //   ),
+              // ],
             ),
             child: Material(
               color: Theme.of(context).cardColor,
