@@ -101,4 +101,35 @@ class DioService {
       if (onFailure != null) onFailure(e, response);
     }
   }
+
+  static Future<void> dioDelete({
+    required String path,
+    Options? options,
+    Object? data,
+    Function(Response)? onSuccess,
+    Function(Object, Response)? onFailure,
+  }) async {
+    Response response = Response(requestOptions: RequestOptions());
+    try {
+      response = await DioConfig.dio().delete(
+        path,
+        options: options,
+        data: data,
+      );
+      print(response.data);
+      Logger().d(response.data);
+      if (response.statusCode == 200) {
+        if (onSuccess != null) onSuccess(response);
+      } else {
+        if (onFailure != null) onFailure(response.statusCode!, response);
+      }
+    } catch (e, stack) {
+      Logger().d(path);
+      Logger().t(e.toString(), stackTrace: stack);
+      // print(response.data);
+      print(e.toString());
+      print(stack);
+      if (onFailure != null) onFailure(e, response);
+    }
+  }
 }

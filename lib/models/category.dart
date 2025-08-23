@@ -5,9 +5,13 @@ class Category {
   final String? categoryNameEn;
   final String? categoryNameAm;
   final bool? certified;
+  final String? hourlyRate;
+  final String? skillLevel;
   final String? image;
 
   const Category({
+    this.hourlyRate,
+    this.skillLevel,
     this.image,
     this.categoryNameAm,
     this.certified,
@@ -22,6 +26,8 @@ class Category {
       categoryNameAm: json['category_am'],
       certified: json['certified'] ?? false,
       image: json['icon_path'],
+      hourlyRate: json['hourly_rate'] ?? '',
+      skillLevel: json['skill_level'] ?? '',
     );
   }
 

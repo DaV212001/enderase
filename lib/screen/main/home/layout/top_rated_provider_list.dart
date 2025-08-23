@@ -23,6 +23,7 @@ class TopRatedProvidersList extends StatelessWidget {
       child: Obx(
         () => LoadedListWidget(
           apiCallStatus: controller.loadingTopRatedProviders.value,
+          errorData: controller.errorTopRatedProviders.value,
           scrollToRefresh: false,
           loadingChild: SizedBox(
             height: MediaQuery.of(context).size.width * 0.3,
@@ -36,13 +37,17 @@ class TopRatedProvidersList extends StatelessWidget {
                     .map((c) => c.categoryName)
                     .where((name) => name.isNotEmpty)
                     .toList();
-                return TopRatedProviderCard(
-                  imageUrl: provider.profilePicture ?? '',
-                  isShimmer: true,
-                  name: '${provider.firstName} ${provider.middleName}',
-                  location: '${provider.subcity}, ${provider.city}',
-                  rating: provider.rating ?? 0,
-                  listOfCategories: listOfCategories,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: TopRatedProviderCard(
+                    imageUrl: provider.profilePicture ?? '',
+                    isShimmer: true,
+                    name: '${provider.firstName} ${provider.middleName}',
+                    location: '${provider.subcity}, ${provider.city}',
+                    rating: provider.rating ?? 0,
+                    listOfCategories: listOfCategories,
+                    id: 0,
+                  ),
                 );
               },
             ),
@@ -72,13 +77,17 @@ class TopRatedProvidersList extends StatelessWidget {
                     .map((c) => c.categoryName)
                     .where((name) => name.isNotEmpty)
                     .toList();
-                return TopRatedProviderCard(
-                  imageUrl: provider.profilePicture ?? '',
-                  isShimmer: false,
-                  name: '${provider.firstName}${provider.middleName}',
-                  location: '${provider.subcity}, ${provider.city}',
-                  rating: provider.rating ?? 0,
-                  listOfCategories: listOfCategories,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: TopRatedProviderCard(
+                    imageUrl: provider.profilePicture ?? '',
+                    isShimmer: false,
+                    name: '${provider.firstName}${provider.middleName}',
+                    location: '${provider.subcity}, ${provider.city}',
+                    rating: provider.rating ?? 0,
+                    listOfCategories: listOfCategories,
+                    id: provider.id ?? 0,
+                  ),
                 );
               },
             ),

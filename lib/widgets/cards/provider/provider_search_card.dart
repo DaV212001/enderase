@@ -1,8 +1,9 @@
 import 'package:enderase/setup_files/wrappers/shimmer_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+import 'package:get/get.dart';
 
 import '../../../constants/constants.dart';
+import '../../../constants/pages.dart';
 import '../../../models/provider.dart';
 import '../../../setup_files/wrappers/cached_image_widget_wrapper.dart';
 
@@ -20,7 +21,7 @@ class ProviderSearchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Logger().d('Tapped');
+        Get.toNamed(AppRoutes.providerDetailRoute, arguments: provider.id);
       },
       child: Column(
         children: [

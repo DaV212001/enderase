@@ -1,3 +1,4 @@
+import 'package:enderase/constants/pages.dart';
 import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:enderase/setup_files/error_card.dart';
 import 'package:enderase/setup_files/error_data.dart';
@@ -92,15 +93,23 @@ class ProfessionalProvidersGrid extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: pageCards
                     .map(
-                      (provider) => ProfessionalProviderCard(
-                        isShimmer: false,
-                        imageUrl: provider.profilePicture ?? '',
-                        name: '${provider.firstName}${provider.middleName}',
-                        location:
-                            '${provider.subcity}, ${provider.city}, ${'woreda'.tr} ${provider.woreda}',
-                        rating: (provider.rating ?? 0).toDouble(),
-                        certificateNumber:
-                            (provider.certifications ?? []).length,
+                      (provider) => InkWell(
+                        onTap: () {
+                          Get.toNamed(
+                            AppRoutes.providerDetailRoute,
+                            arguments: provider.id,
+                          );
+                        },
+                        child: ProfessionalProviderCard(
+                          isShimmer: false,
+                          imageUrl: provider.profilePicture ?? '',
+                          name: '${provider.firstName}${provider.middleName}',
+                          location:
+                              '${provider.subcity}, ${provider.city}, ${'woreda'.tr} ${provider.woreda}',
+                          rating: (provider.rating ?? 0).toDouble(),
+                          certificateNumber:
+                              (provider.certifications ?? []).length,
+                        ),
                       ),
                     )
                     .toList(),

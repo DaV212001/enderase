@@ -198,8 +198,16 @@ class UserController extends GetxController
       'landline_phone': landlinePhoneController.text.trim(),
       'city_id': selectedCityId.toString().trim(),
       'subcity_id': selectedSubCityId.toString().trim(),
-      'woreda': int.parse(woredaController.text.trim()),
-      'house_number': int.parse(houseNumberController.text.trim()),
+      'woreda': int.parse(
+        woredaController.text.trim().isEmpty
+            ? '0'
+            : woredaController.text.trim(),
+      ),
+      'house_number': int.parse(
+        houseNumberController.text.trim().isEmpty
+            ? '0'
+            : houseNumberController.text.trim(),
+      ),
     };
 
     Map<String, dio.MultipartFile>? files = {};

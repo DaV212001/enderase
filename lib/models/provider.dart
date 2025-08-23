@@ -15,10 +15,14 @@ class Provider {
   final String? subCityAm;
   final String? woreda;
   final double? rating;
+  final num? workRadius;
   final List<Category>? categories;
   final List<Certifications>? certifications;
+  final List<String>? languagesSpoken;
 
   Provider({
+    this.languagesSpoken,
+    this.workRadius,
     this.cityAm,
     this.subCityAm,
     this.id,
@@ -33,6 +37,47 @@ class Provider {
     this.categories,
     this.certifications,
   });
+
+  static Provider sampleProvider = Provider(
+    id: 1,
+    firstName: 'Margot',
+    middleName: 'Bartell',
+    workRadius: 5,
+    lastName: 'Bartell',
+    profilePicture:
+        'https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?cs=srgb&dl=pexels-hannah-nelson-390257-1065084.jpg&fm=jpg',
+    cityEn: 'location',
+    cityAm: 'location',
+    subCityAm: 'location',
+    subcityEn: '',
+    woreda: '08',
+    rating: 5,
+    categories: [
+      Category(
+        id: 1,
+        categoryNameAm: 'Nurse',
+        categoryNameEn: 'Nurse',
+        hourlyRate: '344.76',
+        skillLevel: 'beginner',
+      ),
+      Category(
+        id: 1,
+        categoryNameAm: 'Nurse',
+        categoryNameEn: 'Nurse',
+        hourlyRate: '344.76',
+        skillLevel: 'beginner',
+      ),
+      Category(
+        id: 1,
+        categoryNameAm: 'Nurse',
+        categoryNameEn: 'Nurse',
+        hourlyRate: '344.76',
+        skillLevel: 'beginner',
+      ),
+    ],
+    certifications: Certifications.certifications,
+    languagesSpoken: ['amharic', 'english'],
+  );
 
   static List<Provider> providers = [
     Provider(
@@ -169,6 +214,7 @@ class Provider {
       subcityEn: json['subcity'] ?? '',
       subCityAm: json['subcity_am'] ?? '',
       woreda: json['woreda'] ?? '',
+      workRadius: json['work_radius'] ?? 0.0,
       rating: json['rating'] == null
           ? 0.0
           : json['rating'] is double
@@ -186,6 +232,9 @@ class Provider {
                     ?.map((c) => Certifications.fromJson(c))
                     .toList() ??
                 [],
+      languagesSpoken: ((json['languages_spoken'] ?? []) as List)
+          .map((e) => e.toString())
+          .toList(),
     );
   }
 
@@ -204,17 +253,17 @@ class Provider {
 
   String get city {
     if (Get.locale!.languageCode == 'en') {
-      return cityEn!;
+      return cityEn ?? '';
     } else {
-      return cityAm!;
+      return cityAm ?? "";
     }
   }
 
   String get subcity {
     if (Get.locale!.languageCode == 'en') {
-      return subcityEn!;
+      return subcityEn ?? "";
     } else {
-      return subCityAm!;
+      return subCityAm ?? "";
     }
   }
 }

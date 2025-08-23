@@ -16,6 +16,7 @@
 // import '../screens/settings/profile/profile_screen.dart';
 // import '../screens/settings/settings_screen.dart';
 
+import 'package:enderase/screen/main/provider_detail/provider_detail_screen.dart';
 import 'package:enderase/screen/main/search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -95,6 +96,10 @@ class Pages {
     //   name: AppRoutes.tripHistoryDetailRoute,
     //   page: () => const TripHistoryDetailScreen(),
     // ),
+    GetPage(
+      name: AppRoutes.providerDetailRoute,
+      page: () => ProviderDetailScreen(),
+    ),
     GetPage(
       name: AppRoutes.searchRoute,
       page: () => ProviderSearchFilterScreen(),

@@ -4,6 +4,7 @@ import 'package:enderase/setup_files/error_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../constants/pages.dart';
 import '../../../../controllers/provider_controller.dart';
 import '../../../../setup_files/error_data.dart';
 import '../../../../setup_files/templates/loaded_widgets_template.dart';
@@ -75,17 +76,24 @@ class ProviderGrid extends StatelessWidget {
           itemCount: controller.providers.length,
           itemBuilder: (context, index) {
             final provider = controller.providers[index];
-            return ProviderCard(
-              image: provider.profilePicture ?? "",
-              name: '${provider.firstName}${provider.middleName}',
-              location:
-                  '${provider.subcity}, ${provider.city}, ${'woreda'.tr} ${provider.woreda}',
-              rating: (provider.rating ?? 0).toDouble(),
-              categoriesList: (provider.categories ?? [])
-                  .map((c) => c.categoryName ?? "")
-                  .where((name) => name.isNotEmpty)
-                  .toList(),
-              isShimmer: false,
+            return InkWell(
+              onTap: () => Get.toNamed(
+                AppRoutes.providerDetailRoute,
+                arguments: provider.id,
+              ),
+              borderRadius: BorderRadius.circular(7),
+              child: ProviderCard(
+                image: provider.profilePicture ?? "",
+                name: '${provider.firstName}${provider.middleName}',
+                location:
+                    '${provider.subcity}, ${provider.city}, ${'woreda'.tr} ${provider.woreda}',
+                rating: (provider.rating ?? 0).toDouble(),
+                categoriesList: (provider.categories ?? [])
+                    .map((c) => c.categoryName ?? "")
+                    .where((name) => name.isNotEmpty)
+                    .toList(),
+                isShimmer: false,
+              ),
             );
           },
         ),

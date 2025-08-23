@@ -11,7 +11,7 @@ class Certifications {
 
   factory Certifications.fromJson(Map<String, dynamic> json) {
     return Certifications(
-      name: json['name'] ?? '',
+      name: json['name'] ?? 'Certification',
       image: json['file_path'] ?? '',
     );
   }
