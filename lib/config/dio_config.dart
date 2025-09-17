@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:enderase/constants/pages.dart';
+import 'package:get/get.dart' as g;
 import 'package:logger/logger.dart';
 
 import '../constants/constants.dart';
@@ -16,6 +18,17 @@ class LoggingInterceptor extends Interceptor {
   }
 }
 
+class AuthInterceptor extends Interceptor {
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    if (response.statusCode == 401 &&
+        (response.data['message'] as String).contains('Unauthorized')) {
+      g.Get.toNamed(AppRoutes.loginRoute);
+    }
+    super.onResponse(response, handler);
+  }
+}
+
 class DioConfig {
   static Dio dio() {
     Dio dio = Dio(
@@ -26,7 +39,7 @@ class DioConfig {
         receiveTimeout: const Duration(seconds: 120),
       ),
     );
-    dio.interceptors.add(LoggingInterceptor());
+    dio.interceptors.addAll([LoggingInterceptor(), AuthInterceptor()]);
     return dio;
   }
 

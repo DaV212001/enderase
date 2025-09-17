@@ -12,6 +12,8 @@ import '../../../controllers/theme_mode_controller.dart';
 import '../../../setup_files/wrappers/cached_image_widget_wrapper.dart';
 import '../../../widgets/cards/category/category_card_for_provider_detail.dart';
 import '../../../widgets/cards/certificate/certificate_card.dart';
+import '../../../widgets/rating/review_list.dart';
+import 'layout/booking_form.dart';
 
 class ProviderDetailScreen extends StatelessWidget {
   ProviderDetailScreen({super.key});
@@ -21,6 +23,32 @@ class ProviderDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        color: Theme.of(context).cardColor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16),
+              ),
+              onPressed: () => Get.to(
+                () => BookingFlow(
+                  categories: controller.provider.value.categories ?? [],
+                  providerId: controller.providerId,
+                ),
+                arguments: controller.provider.value,
+              ),
+              child: Text(
+                'Book Provider',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: Obx(() {
         if (controller.providerLoading.value == ApiCallStatus.error) {
           return Center(
@@ -52,15 +80,20 @@ class ProviderDetailScreen extends StatelessWidget {
 
                     // Divider(thickness: 0.5),
                     Divider(thickness: 0.5),
-                    buildOccupations(context),
+                    if (controller.provider.value.categories != null &&
+                        controller.provider.value.categories!.isNotEmpty)
+                      buildOccupations(context),
                     if (controller.providerLoading.value !=
                             ApiCallStatus.loading &&
                         (controller.provider.value.certifications ?? [])
                             .isNotEmpty)
                       buildCertificates(context),
+                    Divider(thickness: 0.5),
+                    buildReviewsSection(context),
                   ],
                 ),
               ),
+              SizedBox(height: 55),
             ],
           ),
         );
@@ -111,6 +144,25 @@ class ProviderDetailScreen extends StatelessWidget {
                           .toList(),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildReviewsSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Padding(
+            padding: EdgeInsets.only(top: 4.0, right: 8.0, left: 8.0),
+            child: Text('Reviews', style: TextStyle(fontSize: 13)),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: ReviewList(),
           ),
         ],
       ),
@@ -323,7 +375,7 @@ class ProviderDetailScreen extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.location_on_outlined,
-                        color: Colors.black45,
+                        color: Colors.grey,
                         size: 15,
                       ),
                       SizedBox(
@@ -336,7 +388,7 @@ class ProviderDetailScreen extends StatelessWidget {
                           maxFontSize: 11,
                           minFontSize: 4,
                           maxLines: 2,
-                          style: TextStyle(color: Colors.black45),
+                          style: TextStyle(color: Colors.grey),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

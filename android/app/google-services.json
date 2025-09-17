@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "25757994140",
+    "project_id": "enderase-7712c",
+    "storage_bucket": "enderase-7712c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25757994140:android:34163b8dda58f5e62bb159",
+        "android_client_info": {
+          "package_name": "com.enderase.enderase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFETkNyNInQIR1z2JFWKJUdiNgGjGkZ2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

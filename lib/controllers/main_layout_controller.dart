@@ -1,5 +1,6 @@
 import 'package:enderase/constants/pages.dart';
 import 'package:enderase/controllers/user_controller.dart';
+import 'package:enderase/screen/main/bookings/bookings_screen.dart';
 import 'package:enderase/screen/main/favorites/favorites_screen.dart';
 import 'package:enderase/screen/main/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +42,11 @@ class MainLayoutController extends GetxController {
         ),
       ),
       PersistentTabConfig(
-        screen: HistoryScreen(),
+        screen: BookingsScreen(),
         item: _buildNavItem(
-          icon: Icons.history,
-          title: 'History',
-          route: AppRoutes.historyRoute,
+          icon: Icons.book_online,
+          title: 'Bookings',
+          route: AppRoutes.bookingsRoute,
           context: context,
         ),
       ),

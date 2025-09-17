@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:enderase/controllers/favorites_controller.dart';
 import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:enderase/setup_files/error_data.dart';
 import 'package:enderase/setup_files/error_utils.dart';
@@ -6,12 +7,15 @@ import 'package:enderase/setup_files/templates/dio_template.dart';
 import 'package:get/get.dart';
 
 import '../../models/provider.dart';
+import '../../models/rating.dart';
 import '../config/storage_config.dart';
 
 class ProviderDetailController extends GetxController {
   var provider = Provider().obs;
   var providerLoading = ApiCallStatus.holding.obs;
   var providerError = ErrorData(title: '', body: '', image: '').obs;
+  var ratingsLoading = ApiCallStatus.holding.obs;
+  var ratings = <RatingModel>[].obs;
 
   // Bookmark state
   var isBookmarked = false.obs;
@@ -36,11 +40,28 @@ class ProviderDetailController extends GetxController {
       onSuccess: (response) {
         provider.value = Provider.fromJson(response.data['data']);
         providerLoading.value = ApiCallStatus.success;
+        fetchRatings();
       },
       onFailure: (error, response) async {
         providerError.value = await ErrorUtil.getErrorData(response.toString());
         providerLoading.value = ApiCallStatus.error;
         await errorReport(response);
+      },
+    );
+  }
+
+  // Public reviews: no auth required
+  Future<void> fetchRatings() async {
+    ratingsLoading.value = ApiCallStatus.loading;
+    await DioService.dioGet(
+      path: '/api/v1/client/provider/${providerId}/rate',
+      onSuccess: (response) {
+        final list = (response.data['data'] as List?) ?? [];
+        ratings.value = list.map((e) => RatingModel.fromJson(e)).toList();
+        ratingsLoading.value = ApiCallStatus.success;
+      },
+      onFailure: (err, resp) async {
+        ratingsLoading.value = ApiCallStatus.error;
       },
     );
   }
@@ -90,6 +111,13 @@ class ProviderDetailController extends GetxController {
               'Authorization': 'Bearer ${ConfigPreference.getUserToken()}',
             },
           ),
+          onSuccess: (response) async {
+            if (Get.isRegistered<FavoritesController>()) {
+              Get.find<FavoritesController>().fetchFavoritedProviders(
+                refresh: true,
+              );
+            }
+          },
           onFailure: (error, response) async {
             // rollback state
             isBookmarked.value = oldState;
@@ -104,6 +132,13 @@ class ProviderDetailController extends GetxController {
               'Authorization': 'Bearer ${ConfigPreference.getUserToken()}',
             },
           ),
+          onSuccess: (response) {
+            if (Get.isRegistered<FavoritesController>()) {
+              Get.find<FavoritesController>().fetchFavoritedProviders(
+                refresh: true,
+              );
+            }
+          },
           onFailure: (error, response) async {
             // rollback state
             isBookmarked.value = oldState;

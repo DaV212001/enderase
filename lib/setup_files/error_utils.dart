@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:enderase/constants/pages.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -19,8 +20,10 @@ class ErrorUtil {
   ///
   /// Returns:
   /// - [ErrorData]: An object containing the error title, body, image, and button text.
-  static Future<ErrorData> getErrorData(String error,
-      {String? customMessage}) async {
+  static Future<ErrorData> getErrorData(
+    String error, {
+    String? customMessage,
+  }) async {
     print("Here in error Util $error");
 
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -133,8 +136,19 @@ Future<void> errorReport(dio.Response<dynamic> response) async {
         Get.snackbar('Error', error['message']);
       }
     } else if (errorMap.containsKey('error')) {
-      errorString = errorMap['error'];
-      Get.snackbar('Error', errorString);
+      if (errorMap['error'] is String) {
+        errorString = errorMap['error'];
+        Get.snackbar('Error', errorString);
+      } else if (errorMap['error'] == null) {
+        errorString = errorMap['message'];
+        if (errorMap['status'] == 401) {
+          Get.snackbar(
+            'Error',
+            'Your session has expired, please login again.',
+          );
+          Get.offNamed(AppRoutes.loginRoute);
+        }
+      }
     } else {
       errorString = (await ErrorUtil.getErrorData(response.toString())).body;
       Get.snackbar('Error', errorString);

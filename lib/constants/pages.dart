@@ -16,6 +16,8 @@
 // import '../screens/settings/profile/profile_screen.dart';
 // import '../screens/settings/settings_screen.dart';
 
+import 'package:enderase/screen/main/bookings/bookings_screen.dart';
+import 'package:enderase/screen/main/bookings/booking_detail_screen.dart';
 import 'package:enderase/screen/main/provider_detail/provider_detail_screen.dart';
 import 'package:enderase/screen/main/search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,6 +41,8 @@ class AppRoutes {
   static String get searchRoute => '/search-screen';
   static String get homeRoute => '/main-screen';
   static String get favoritesRoute => '/favorites';
+  static String get bookingsRoute => '/bookings';
+  static String get bookingDetailRoute => '/booking-detail';
   static String get historyRoute => '/trip-history';
   static String get historyDetailRoute => '/trip-history-detail';
   static String get signupRoute => '/signup';
@@ -103,6 +107,14 @@ class Pages {
     GetPage(
       name: AppRoutes.searchRoute,
       page: () => ProviderSearchFilterScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.bookingsRoute,
+      page: () => const BookingsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.bookingDetailRoute,
+      page: () => const BookingDetailScreen(),
     ),
     GetPage(name: AppRoutes.signupRoute, page: () => const SignUpScreen()),
     GetPage(name: AppRoutes.loginRoute, page: () => const LoginScreen()),

@@ -115,7 +115,7 @@ class SignUpScreen extends StatelessWidget {
                                 children: [
                                   buildStep1(signUpController),
                                   buildStep2(signUpController),
-                                  buildStep3(signUpController),
+                                  buildStep3(signUpController, context),
                                   buildStep4(signUpController),
                                 ],
                               ),
@@ -185,7 +185,7 @@ class SignUpScreen extends StatelessWidget {
             ),
             InputFieldWidget(
               textEditingController: signUpController.fanNumberController,
-              focusNode: FocusNode(),
+              focusNode: signUpController.fanFocusNode,
               passwordInput: false,
               obscureText: false,
               label: 'FAN Number (Fayda ID)'.tr,
@@ -265,7 +265,7 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Widget buildStep3(UserController signUpController) {
+  Widget buildStep3(UserController signUpController, BuildContext context) {
     return buildFormWrapper(
       signUpController,
       SingleChildScrollView(
@@ -340,7 +340,7 @@ class SignUpScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: const Color(0xFFF1F4F8),
+                      fillColor: Theme.of(context).colorScheme.surface,
                       errorMaxLines: 2,
                     ),
                   ),
@@ -410,7 +410,7 @@ class SignUpScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: const Color(0xFFF1F4F8),
+                      fillColor: Theme.of(context).colorScheme.surface,
                       errorMaxLines: 2,
                     ),
                     onChanged: (value) {

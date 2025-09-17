@@ -5,6 +5,7 @@ import 'package:enderase/models/city.dart';
 import 'package:enderase/models/sub_city.dart';
 import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:enderase/setup_files/error_data.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,6 +40,7 @@ class UserController extends GetxController
   FocusNode firstnameFocusNode = FocusNode();
 
   TextEditingController fanNumberController = TextEditingController();
+  FocusNode fanFocusNode = FocusNode();
   FocusNode lastnameFocusNode = FocusNode();
 
   TextEditingController phoneController = TextEditingController();
@@ -248,10 +250,12 @@ class UserController extends GetxController
 
   void logIn() async {
     if (loginKey.currentState!.validate() == false) return;
+    var fcmToken = await FirebaseMessaging.instance.getToken();
     // try {
     final requestData = {
       "email_phone": emailorPhoneSignInController.text,
       "password": passwordSignInController.text,
+      "device_token": fcmToken,
       // "provider": "google",
     };
     loggingIn.value = true;

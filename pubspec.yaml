@@ -54,6 +54,13 @@ dependencies:
   enefty_icons: ^1.0.8
   ionicons: ^0.2.2
   animated_toggle_switch: ^0.8.5
+  table_calendar: ^3.2.0
+  syncfusion_flutter_calendar: ^31.1.18
+  progressive_time_picker: ^1.0.3
+  flutter_time_picker_spinner: ^2.0.0
+  firebase_core: ^4.1.0
+  firebase_messaging: ^16.0.1
+  awesome_notifications: ^0.10.1
 
 dev_dependencies:
   flutter_test:

@@ -24,6 +24,13 @@ class TopRatedProvidersList extends StatelessWidget {
         () => LoadedListWidget(
           apiCallStatus: controller.loadingTopRatedProviders.value,
           errorData: controller.errorTopRatedProviders.value,
+          errorChild: ErrorCard(
+            makeHorizontal: true,
+            errorData:
+                controller.errorTopRatedProviders.value ??
+                ErrorData(title: '', body: '', image: ''),
+            refresh: controller.fetchTopRatedProviders,
+          ),
           scrollToRefresh: false,
           loadingChild: SizedBox(
             height: MediaQuery.of(context).size.width * 0.3,

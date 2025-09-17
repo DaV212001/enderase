@@ -4,11 +4,13 @@ class InputFieldWidget extends StatefulWidget {
   final TextEditingController textEditingController;
   final FocusNode? focusNode;
   final String? Function(String? val) validator;
-  final String? Function(String? val)? onChanged;
+  final void Function(String? val)? onChanged;
+  final void Function(String? val)? onSaved;
   bool obscureText;
   final Widget? prefixIcon;
   final String? label;
   final bool passwordInput;
+  final TextInputType? textInputType;
   final String? hint;
   final int? maxLength;
 
@@ -20,10 +22,12 @@ class InputFieldWidget extends StatefulWidget {
     required this.validator,
     required this.passwordInput,
     this.label,
+    this.textInputType,
     this.prefixIcon,
     this.onChanged,
     this.hint,
     this.maxLength,
+    this.onSaved,
   });
 
   @override
@@ -40,18 +44,19 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
           width: double.infinity,
           child: TextFormField(
             controller: widget.textEditingController,
-            style: const TextStyle(color: Colors.black),
+            // style: const TextStyle(color: Colors.black),
             focusNode: widget.focusNode,
             autofocus: false,
             maxLength: widget.maxLength,
             onChanged: widget.onChanged,
+            keyboardType: widget.textInputType,
+            onSaved: widget.onSaved,
             autofillHints: const [AutofillHints.password],
             obscureText: !widget.obscureText,
             decoration: InputDecoration(
               labelText: widget.label,
               hintText: widget.hint,
-              hintStyle: const TextStyle(color: Colors.black),
-              labelStyle: const TextStyle(color: Colors.black, fontSize: 12),
+              labelStyle: const TextStyle(fontSize: 12),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.white, width: 2),
                 borderRadius: BorderRadius.circular(12),
@@ -72,7 +77,7 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
                 borderRadius: BorderRadius.circular(12),
               ),
               filled: true,
-              fillColor: const Color(0xFFF1F4F8),
+              fillColor: Theme.of(context).colorScheme.surface,
               suffixIcon: InkWell(
                 onTap: () =>
                     setState(() => widget.obscureText = !widget.obscureText),
@@ -100,18 +105,20 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
           child: TextFormField(
             controller: widget.textEditingController,
             focusNode: widget.focusNode,
-            style: const TextStyle(color: Colors.black),
+            // style: const TextStyle(color: Colors.black),
             autofocus: false,
             maxLength: widget.maxLength,
             onChanged: widget.onChanged,
             autofillHints: const [AutofillHints.password],
             obscureText: widget.obscureText,
+
+            onSaved: widget.onSaved,
+            keyboardType: widget.textInputType,
             decoration: InputDecoration(
               icon: widget.prefixIcon,
               labelText: widget.label,
               hintText: widget.hint,
-              hintStyle: const TextStyle(color: Colors.black),
-              labelStyle: const TextStyle(color: Colors.black, fontSize: 12),
+              labelStyle: const TextStyle(fontSize: 12),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.white, width: 2),
                 borderRadius: BorderRadius.circular(12),
@@ -132,7 +139,7 @@ class _InputFieldWidgetState extends State<InputFieldWidget> {
                 borderRadius: BorderRadius.circular(12),
               ),
               filled: true,
-              fillColor: const Color(0xFFF1F4F8),
+              fillColor: Theme.of(context).colorScheme.surface,
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: widget.validator,
