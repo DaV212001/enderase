@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../controllers/user_controller.dart';
 import '../../widgets/footer.dart';
 import '../../widgets/input_field.dart';
+import '../../widgets/language_change_selector.dart';
 import '../../widgets/main_button.dart';
 
 String stepStringFromIndex(int index) {
@@ -52,6 +53,12 @@ class SignUpScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height,
                   child: Column(
                     children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.05,
+                        ),
+                        child: LanguageSelectorButton(onChange: () {}),
+                      ),
                       const SizedBox(height: 70),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
@@ -188,9 +195,9 @@ class SignUpScreen extends StatelessWidget {
               focusNode: signUpController.fanFocusNode,
               passwordInput: false,
               obscureText: false,
-              label: 'FAN Number (Fayda ID)'.tr,
+              label: 'fan_number'.tr,
               validator: (val) {
-                if (val!.length < 16) return "Fayda number is required".tr;
+                if (val!.length < 16) return "fan_required".tr;
                 return null;
               },
             ),
@@ -502,7 +509,7 @@ class SignUpScreen extends StatelessWidget {
               ),
             ),
 
-            const Text("Pick Profile Picture"),
+            Text("pick_profile_picture".tr),
             Obx(
               () => signUpController.signingUp.value
                   ? const CircularProgressIndicator()

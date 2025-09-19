@@ -10,6 +10,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:logger/logger.dart';
 
 import '../../../../config/storage_config.dart';
+import '../../../../constants/pages.dart';
 import '../../../../models/category.dart';
 import '../../../../models/provider.dart';
 import '../../../../setup_files/wrappers/cached_image_widget_wrapper.dart';
@@ -32,14 +33,23 @@ class BookingConfirmationScreen extends StatelessWidget {
   String _formatTime(DateTime? dt) =>
       dt == null ? "-" : DateFormat("HH:mm").format(dt);
 
+  void _showTermsAndConditions() async {
+    final result = await Get.toNamed(
+      AppRoutes.termsAndConditionsRoute,
+      arguments: null,
+    );
+
+    if (result != null && result['accepted'] == true) {
+      // Terms accepted, proceed with booking
+      controller.confirmBooking();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Logger().d(UserController.user.value.id);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Confirm Your Booking"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text('confirm_your_booking'.tr), centerTitle: true),
       body: Obx(() {
         final type = controller.bookingType.value;
         Provider provider = Get.arguments;
@@ -188,18 +198,18 @@ class BookingConfirmationScreen extends StatelessWidget {
                   ),
                   title: Text(
                     type == "one_time"
-                        ? "One-Time Booking"
+                        ? 'one_time_booking'.tr
                         : type == 'recurring'
-                        ? "Recurring Booking"
-                        : "Full-Time Booking",
+                        ? 'recurring_booking'.tr
+                        : 'full_time_booking'.tr,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   subtitle: Text(
                     type == "one_time"
-                        ? "This booking will happen once at the selected time"
+                        ? 'one_time_booking_description'.tr
                         : type == 'recurring'
-                        ? "This booking will repeat on selected days and times"
-                        : "This booking will be available for the entire day, unless edited",
+                        ? 'recurring_booking_description'.tr
+                        : 'full_time_booking_description'.tr,
                   ),
                 ),
               ),
@@ -211,45 +221,48 @@ class BookingConfirmationScreen extends StatelessWidget {
                   title: "Date & Time",
                   children: [
                     _infoRow(
-                      "Start",
+                      'start'.tr,
                       "${_formatDate(controller.oneTimeStart.value)} • ${_formatTime(controller.oneTimeStart.value)}",
                     ),
                     _infoRow(
-                      "End",
+                      'end'.tr,
                       "${_formatDate(controller.oneTimeEnd.value)} • ${_formatTime(controller.oneTimeEnd.value)}",
                     ),
                   ],
                 ),
               ] else ...[
                 _buildSectionCard(
-                  title: "Schedule Duration",
+                  title: 'schedule_duration'.tr,
                   children: [
                     _infoRow(
-                      "Start Date",
+                      'start_date'.tr,
                       _formatDate(controller.startDate.value),
                     ),
                     _infoRow(
-                      "End Date",
+                      'end_date'.tr,
                       controller.indefinite.value
-                          ? "Indefinite"
+                          ? 'indefinite'.tr
                           : _formatDate(controller.endDate.value),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 _buildSectionCard(
-                  title: "Recurrence",
+                  title: 'recurrence'.tr,
                   children: [
                     _infoRow(
-                      "Frequency",
+                      'frequency'.tr,
                       (controller.frequency.value ?? "-").tr,
                     ),
-                    _infoRow("Interval", "${controller.interval.value ?? 1}"),
+                    _infoRow(
+                      'interval'.tr,
+                      '${controller.interval.value ?? 1}',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 _buildSectionCard(
-                  title: "Time Windows",
+                  title: 'time_windows'.tr,
                   children: controller.windows.entries.expand((entry) {
                     final weekday = entry.key;
                     return entry.value.map(
@@ -269,14 +282,14 @@ class BookingConfirmationScreen extends StatelessWidget {
 
               // ----- Notes & Category -----
               _buildSectionCard(
-                title: "Additional Info",
+                title: 'additional_info'.tr,
                 children: [
                   _infoRow(
-                    "Category",
+                    'category'.tr,
                     controller.selectedCategory.value?.categoryName ?? "-",
                   ),
                   _infoRow(
-                    "Notes",
+                    'notes'.tr,
                     controller.notesReceived.value.isEmpty
                         ? "-"
                         : controller.notesReceived.value,
@@ -296,7 +309,7 @@ class BookingConfirmationScreen extends StatelessWidget {
             () => ElevatedButton.icon(
               onPressed: controller.confirming.value
                   ? null
-                  : () => controller.confirmBooking(),
+                  : () => _showTermsAndConditions(),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
@@ -312,8 +325,8 @@ class BookingConfirmationScreen extends StatelessWidget {
               label: Obx(
                 () => controller.confirming.value
                     ? CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        "Confirm Booking",
+                    : Text(
+                        'confirm_booking'.tr,
                         style: TextStyle(color: Colors.white),
                       ),
               ),
@@ -465,7 +478,7 @@ class BookingController extends GetxController {
       }
 
       newPayload["indefinite"] = indefiniteReceived;
-      if (endDateReceived != null) {
+      if (endDateReceived != null && indefiniteReceived != true) {
         newPayload["end_date"] = DateFormat(
           "yyyy-MM-dd",
         ).format(endDateReceived);
@@ -500,7 +513,7 @@ class BookingController extends GetxController {
       final err = validateAllWindows();
       if (err != null) {
         Get.snackbar(
-          "Invalid schedule",
+          'invalid_schedule'.tr,
           err,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -515,8 +528,8 @@ class BookingController extends GetxController {
       Logger().d(payload);
     } else {
       Get.snackbar(
-        "Incomplete Information",
-        "Please fill all required fields",
+        'incomplete_information'.tr,
+        'please_fill_all_required_fields'.tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -539,14 +552,17 @@ class BookingController extends GetxController {
         if (response.statusCode == 200 || response.statusCode == 201) {
           Provider provider = Get.arguments;
           Get.snackbar(
-            "Booking Created",
-            "You have successfully booked ${provider.firstName} as a ${selectedCategory.value?.categoryName ?? ''}",
+            'booking_created'.tr,
+            "success_book".trParams({
+              'provider': provider.firstName ?? '',
+              'category': selectedCategory.value?.categoryName ?? '',
+            }),
             backgroundColor: Colors.green,
             colorText: Colors.white,
           );
         } else {
           Get.snackbar(
-            "Error",
+            'error'.tr,
             "Something went wrong: ${response.data['message']}",
             backgroundColor: Colors.red,
             colorText: Colors.white,
@@ -556,8 +572,8 @@ class BookingController extends GetxController {
       },
       onFailure: (error, response) {
         Get.snackbar(
-          "Error",
-          "Something went wrong",
+          'error'.tr,
+          'something_went_wrong'.tr,
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
@@ -596,7 +612,7 @@ class _BookingFlowState extends State<BookingFlow> {
               padding: const EdgeInsets.all(16.0),
               child: BookingStepIndicator(
                 currentStep: currentStep,
-                steps: const ["Category", "Details", "Schedule"],
+                steps: ["category".tr, "details".tr, "schedule".tr],
               ),
             ),
             // Divider(),
@@ -643,8 +659,8 @@ class _BookingFlowState extends State<BookingFlow> {
                         payload["meta"] = formAnswers;
 
                         Get.snackbar(
-                          "Booking Ready",
-                          "Payload constructed successfully",
+                          'booking_ready'.tr,
+                          'payload_constructed_successfully'.tr,
                           backgroundColor: Colors.green,
                           colorText: Colors.white,
                         );
@@ -675,8 +691,8 @@ class _BookingFlowState extends State<BookingFlow> {
                             context,
                           ).colorScheme.primary,
                         ),
-                        child: const Text(
-                          "Create Booking",
+                        child: Text(
+                          'create_booking'.tr,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -700,8 +716,8 @@ class _BookingFlowState extends State<BookingFlow> {
                               setState(() => currentStep--);
                             }
                           },
-                          child: const Text(
-                            "Previous",
+                          child: Text(
+                            'previous'.tr,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -720,8 +736,8 @@ class _BookingFlowState extends State<BookingFlow> {
                                 });
                               } else {
                                 Get.snackbar(
-                                  "Validation Error",
-                                  "Please fill in all required fields",
+                                  'validation_error'.tr,
+                                  'please_fill_in_all_required_fields'.tr,
                                   backgroundColor: Colors.red,
                                   colorText: Colors.white,
                                 );
@@ -730,8 +746,8 @@ class _BookingFlowState extends State<BookingFlow> {
                               setState(() => currentStep++);
                             }
                           },
-                          child: const Text(
-                            "Next",
+                          child: Text(
+                            'next'.tr,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

@@ -12,11 +12,14 @@ class BookingDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int bookingId = Get.arguments as int;
+    final args = Get.arguments;
+    final int bookingId = args is int ? args : (args['id'] as int);
     final controller = Get.put(BookingDetailController(bookingId: bookingId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Booking Details')),
+      appBar: AppBar(
+        title: Text('booking_id'.trParams({'id': bookingId.toString()})),
+      ),
       body: Obx(() {
         if (controller.loading.value == ApiCallStatus.error) {
           return Center(
@@ -71,22 +74,22 @@ class BookingDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              _sectionTitle('Schedule'),
+              _sectionTitle('schedule'.tr),
               _scheduleWidget(b),
               const SizedBox(height: 16),
 
               if (b.meta != null && b.meta!.isNotEmpty) ...[
-                _sectionTitle('Details'),
+                _sectionTitle('details'.tr),
                 _metaCard(b),
                 const SizedBox(height: 16),
               ],
 
-              _sectionTitle('Created'),
+              _sectionTitle('created'.tr),
               Text(_formatDateTime(b.createdAt)),
               const SizedBox(height: 24),
 
               if (controller.canRateProvider) ...[
-                _sectionTitle('Rate Provider'),
+                _sectionTitle('rating'.tr),
                 const SizedBox(height: 8),
                 _ratingForm(controller),
               ],
@@ -165,7 +168,7 @@ class BookingDetailScreen extends StatelessWidget {
   Widget _scheduleWidget(Booking b) {
     final sch = b.schedule ?? {};
     final type = (sch['type'] ?? '').toString();
-    if (type == 'one_time') {
+    if (type == 'one_time'.tr) {
       final start = b.formattedStartTime;
       final end = b.formattedEndTime;
       return Row(
@@ -178,25 +181,46 @@ class BookingDetailScreen extends StatelessWidget {
     }
     final freq = (sch['frequency'] ?? '').toString();
     final interval = sch['interval']?.toString();
-    final windows = (sch['windows'] is Map)
-        ? Map<String, dynamic>.from(sch['windows'])
-        : const {};
+    // Support both legacy map windows and new list windows format
+    final dynamic rawWindows = sch['windows'];
+    Map<String, dynamic> windowsByDay = const {};
+    if (rawWindows is Map) {
+      windowsByDay = Map<String, dynamic>.from(rawWindows);
+    } else if (rawWindows is List) {
+      // Convert list of {day_of_week,start_time,end_time} to map day->[ranges]
+      final Map<String, List<Map<String, String>>> tmp = {};
+      for (final w in rawWindows) {
+        if (w is Map) {
+          final String dayKey = (w['day_of_week'] ?? w['day'] ?? '').toString();
+          final String start = (w['start_time'] ?? w['start'] ?? '').toString();
+          final String end = (w['end_time'] ?? w['end'] ?? '').toString();
+          if (dayKey.isEmpty || start.isEmpty || end.isEmpty) continue;
+          tmp.putIfAbsent(dayKey, () => []);
+          tmp[dayKey]!.add({'start': start, 'end': end});
+        }
+      }
+      windowsByDay = tmp.map((k, v) => MapEntry(k, v));
+    }
     final title =
-        '${type == 'recurring' ? 'Recurring' : 'Full-Time'} • ${_freq(freq)}${interval != null ? ' • Every $interval ${_suffix(freq, int.tryParse(interval) ?? 1)}' : ''}';
+        '${type == 'recurring' ? 'recurring'.tr : 'full_time'.tr} • ${_freq(freq)}${interval != null ? ' • ${'every'.tr} $interval ${_suffix(freq, int.tryParse(interval) ?? 1)}' : ''}';
     final chips = <Widget>[];
-    if (windows.isNotEmpty) {
-      final keys = windows.keys.toList()
+    if (windowsByDay.isNotEmpty) {
+      final keys = windowsByDay.keys.toList()
         ..sort(
           (a, b) => (int.tryParse(a) ?? 0).compareTo(int.tryParse(b) ?? 0),
         );
       for (final k in keys) {
         final day = _day(int.tryParse(k) ?? 0);
-        final List rows = windows[k] is List ? (windows[k] as List) : const [];
+        final List rows = windowsByDay[k] is List
+            ? (windowsByDay[k] as List)
+            : const [];
         if (rows.isEmpty) continue;
         final ranges = rows
             .map((e) {
               final m = (e is Map) ? e : {};
-              return '${(m['start'] ?? '').toString()}–${(m['end'] ?? '').toString()}';
+              final s = (m['start'] ?? m['start_time'] ?? '').toString();
+              final end = (m['end'] ?? m['end_time'] ?? '').toString();
+              return '$s–$end';
             })
             .join(', ');
         chips.add(
@@ -285,7 +309,7 @@ class BookingDetailScreen extends StatelessWidget {
         ),
         TextField(
           maxLines: 3,
-          decoration: const InputDecoration(hintText: 'Write your comment'),
+          decoration: InputDecoration(hintText: 'write_your_comment'.tr),
           onChanged: (v) => c.ratingComment.value = v,
         ),
         const SizedBox(height: 8),
@@ -301,7 +325,7 @@ class BookingDetailScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   )
-                : const Text('Submit', style: TextStyle(color: Colors.white)),
+                : Text('submit'.tr, style: TextStyle(color: Colors.white)),
           ),
         ),
       ],
@@ -311,7 +335,7 @@ class BookingDetailScreen extends StatelessWidget {
   String _formatDateTime(String? dateTime) {
     if (dateTime == null) return '';
     try {
-      final parsed = DateTime.parse(dateTime);
+      final parsed = DateTime.parse(dateTime).toLocal();
       return '${parsed.day}/${parsed.month}/${parsed.year} ${parsed.hour}:${parsed.minute.toString().padLeft(2, '0')}';
     } catch (e) {
       return dateTime;
@@ -328,11 +352,11 @@ class BookingDetailScreen extends StatelessWidget {
   String _freq(String f) {
     switch (f) {
       case 'daily':
-        return 'Daily';
+        return 'daily'.tr;
       case 'weekly':
-        return 'Weekly';
+        return 'weekly'.tr;
       case 'monthly':
-        return 'Monthly';
+        return 'monthly'.tr;
       default:
         return f;
     }
@@ -341,34 +365,34 @@ class BookingDetailScreen extends StatelessWidget {
   String _suffix(String f, int n) {
     switch (f) {
       case 'daily':
-        return n == 1 ? 'day' : 'days';
+        return n == 1 ? 'day'.tr : 'days'.tr;
       case 'weekly':
-        return n == 1 ? 'week' : 'weeks';
+        return n == 1 ? 'week'.tr : 'weeks'.tr;
       case 'monthly':
-        return n == 1 ? 'month' : 'months';
+        return n == 1 ? 'month'.tr : 'months'.tr;
       default:
-        return 'times';
+        return 'times'.tr;
     }
   }
 
   String _day(int idx) {
     switch (idx) {
       case 1:
-        return 'Mon';
+        return 'mon'.tr;
       case 2:
-        return 'Tue';
+        return 'tue'.tr;
       case 3:
-        return 'Wed';
+        return 'wed'.tr;
       case 4:
-        return 'Thu';
+        return 'thu'.tr;
       case 5:
-        return 'Fri';
+        return 'fri'.tr;
       case 6:
-        return 'Sat';
+        return 'sat'.tr;
       case 7:
-        return 'Sun';
+        return 'sun'.tr;
       default:
-        return 'Day $idx';
+        return '${'day'.tr} $idx';
     }
   }
 }

@@ -51,6 +51,12 @@ void main() async {
     );
   }
   await FirebaseHandler().initNotifications();
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    var set = await AwesomeNotifications().setListeners(
+      onActionReceivedMethod: NotificationService.onActionReceived,
+    );
+    print('SETTING ON ACTION RECEIVED: $set');
+  });
   await ConfigPreference.init();
   runApp(const Enderase());
 }

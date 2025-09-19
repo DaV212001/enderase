@@ -23,6 +23,7 @@ class ProviderDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         color: Theme.of(context).cardColor,
@@ -42,7 +43,7 @@ class ProviderDetailScreen extends StatelessWidget {
                 arguments: controller.provider.value,
               ),
               child: Text(
-                'Book Provider',
+                'book_provider'.tr,
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -93,7 +94,7 @@ class ProviderDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 55),
+              SizedBox(height: 75),
             ],
           ),
         );
@@ -111,7 +112,7 @@ class ProviderDetailScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 4.0, right: 8.0, left: 8.0),
-            child: Text('Certifications', style: TextStyle(fontSize: 13)),
+            child: Text('certifications'.tr, style: TextStyle(fontSize: 13)),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
@@ -155,10 +156,10 @@ class ProviderDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Padding(
             padding: EdgeInsets.only(top: 4.0, right: 8.0, left: 8.0),
-            child: Text('Reviews', style: TextStyle(fontSize: 13)),
+            child: Text('reviews'.tr, style: TextStyle(fontSize: 13)),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -180,7 +181,7 @@ class ProviderDetailScreen extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 4.0, right: 8.0, left: 8.0),
-          child: Text('Occupations', style: TextStyle(fontSize: 13)),
+          child: Text('cccupations'.tr, style: TextStyle(fontSize: 13)),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
@@ -315,7 +316,7 @@ class ProviderDetailScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.radar, color: Theme.of(context).primaryColor),
                   Text(
-                    '${controller.provider.value.workRadius ?? 5}km Work Radius',
+                    '${controller.provider.value.workRadius ?? 5}${'km_work_radius'.tr}',
                     style: TextStyle(fontSize: 12),
                   ),
                 ],

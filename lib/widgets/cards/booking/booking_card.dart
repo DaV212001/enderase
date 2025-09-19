@@ -309,11 +309,13 @@ class BookingCard extends StatelessWidget {
         : const {};
 
     final headerParts = <String>[];
-    if (type == 'recurring') headerParts.add('Recurring');
-    if (type == 'full_time') headerParts.add('Full-Time');
+    if (type == 'recurring') headerParts.add('recurring'.tr);
+    if (type == 'full_time') headerParts.add('full_time'.tr);
     if (freq.isNotEmpty) headerParts.add(_frequencyLabel(freq));
     if (interval != null) {
-      headerParts.add('Every $interval ${_intervalSuffix(freq, interval)}');
+      headerParts.add(
+        '${'every'.tr} $interval ${_intervalSuffix(freq, interval)}',
+      );
     }
     // Add duration description (indefinite or range-based)
     final bool indefinite = (sch['indefinite'] == true);
@@ -368,7 +370,7 @@ class BookingCard extends StatelessWidget {
             const SizedBox(width: 6),
             Expanded(
               child: Text(
-                header.isNotEmpty ? header : 'Schedule',
+                header.isNotEmpty ? header : 'schedule'.tr,
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -388,11 +390,11 @@ class BookingCard extends StatelessWidget {
   String _frequencyLabel(String f) {
     switch (f) {
       case 'daily':
-        return 'Daily';
+        return 'daily'.tr;
       case 'weekly':
-        return 'Weekly';
+        return 'weekly'.tr;
       case 'monthly':
-        return 'Monthly';
+        return 'monthly'.tr;
       default:
         return f;
     }
@@ -401,13 +403,13 @@ class BookingCard extends StatelessWidget {
   String _intervalSuffix(String f, int n) {
     switch (f) {
       case 'daily':
-        return n == 1 ? 'day' : 'days';
+        return n == 1 ? 'day'.tr : 'days'.tr;
       case 'weekly':
-        return n == 1 ? 'week' : 'weeks';
+        return n == 1 ? 'week'.tr : 'weeks'.tr;
       case 'monthly':
-        return n == 1 ? 'month' : 'months';
+        return n == 1 ? 'month'.tr : 'months'.tr;
       default:
-        return 'times';
+        return 'times'.tr;
     }
   }
 
@@ -421,21 +423,21 @@ class BookingCard extends StatelessWidget {
   String _weekdayName(int idx) {
     switch (idx) {
       case 1:
-        return 'Mon';
+        return 'mon'.tr;
       case 2:
-        return 'Tue';
+        return 'tue'.tr;
       case 3:
-        return 'Wed';
+        return 'wed'.tr;
       case 4:
-        return 'Thu';
+        return 'thu'.tr;
       case 5:
-        return 'Fri';
+        return 'fri'.tr;
       case 6:
-        return 'Sat';
+        return 'sat'.tr;
       case 7:
-        return 'Sun';
+        return 'sun'.tr;
       default:
-        return 'Day $idx';
+        return '${'day'.tr} $idx';
     }
   }
 
@@ -463,15 +465,15 @@ class BookingCard extends StatelessWidget {
       switch (freq) {
         case 'daily':
           final days = diffDays + 1; // inclusive range
-          return '$days days';
+          return '$days ${'days'.tr}';
         case 'weekly':
           final weeks = ((diffDays + 1) / 7).ceil();
-          return '$weeks weeks';
+          return '$weeks ${'weeks'.tr}';
         case 'monthly':
           final months = _monthDiff(s, e).abs();
-          return months <= 1 ? '1 month' : '$months months';
+          return months <= 1 ? '1 ${'month'.tr}' : '$months ${'months'.tr}';
         default:
-          return '${diffDays + 1} days';
+          return '${diffDays + 1} ${'days'.tr}';
       }
     }
     // Open-ended one-side known

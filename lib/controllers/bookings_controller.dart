@@ -106,6 +106,14 @@ class BookingsController extends GetxController {
           if (meta != null && meta['current_page'] != null) {
             _page = meta['current_page'];
           }
+          bookings.sort(
+            (a, b) =>
+                DateTime.parse(
+                  a.createdAt ?? '',
+                ).isBefore(DateTime.parse(b.createdAt ?? ''))
+                ? 1
+                : -1,
+          );
         },
         onFailure: (error, response) async {
           // roll back page increment if load more failed

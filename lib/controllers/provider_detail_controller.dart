@@ -56,7 +56,7 @@ class ProviderDetailController extends GetxController {
     await DioService.dioGet(
       path: '/api/v1/client/provider/${providerId}/rate',
       onSuccess: (response) {
-        final list = (response.data['data'] as List?) ?? [];
+        final list = (response.data['data']['data'] as List?) ?? [];
         ratings.value = list.map((e) => RatingModel.fromJson(e)).toList();
         ratingsLoading.value = ApiCallStatus.success;
       },

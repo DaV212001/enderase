@@ -62,8 +62,8 @@ class _FlexibleTimeSelectorState extends State<FlexibleTimeSelector> {
     // Called when the child widget reports a valid selection (on release / confirm).
     if (_isBusy(dt)) {
       Get.snackbar(
-        "Busy Time",
-        "⚠️ That time overlaps with a busy slot",
+        'busy_time'.tr,
+        'time_overlaps_busy_slot'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -96,21 +96,21 @@ class _FlexibleTimeSelectorState extends State<FlexibleTimeSelector> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Display:"),
+                  Text('display'.tr),
                   const SizedBox(width: 8),
                   ToggleButtons(
                     isSelected: [use24, !use24],
                     onPressed: (i) {
                       setState(() => use24 = i == 0);
                     },
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('24h'),
+                        child: Text('time_24h'.tr),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('12h'),
+                        child: Text('time_12h'.tr),
                       ),
                     ],
                   ),
@@ -143,7 +143,7 @@ class _FlexibleTimeSelectorState extends State<FlexibleTimeSelector> {
             onPressed: () {
               Navigator.pop(context, selected);
             },
-            child: const Text('Select', style: TextStyle(color: Colors.white)),
+            child: Text('select'.tr, style: TextStyle(color: Colors.white)),
           ),
         ),
       ],
@@ -214,8 +214,9 @@ class _CircularTimeWheelState extends State<CircularTimeWheel> {
 
   bool _isBusy(DateTime candidate) {
     for (final r in widget.busyRanges) {
-      if (!candidate.isBefore(r.start) && candidate.isBefore(r.end))
+      if (!candidate.isBefore(r.start.toLocal()) && candidate.isBefore(r.end)) {
         return true;
+      }
     }
     return false;
   }
@@ -234,8 +235,8 @@ class _CircularTimeWheelState extends State<CircularTimeWheel> {
     if (_isBusy(liveCandidate!)) {
       // show snackbar (Get) only on release into busy area
       Get.snackbar(
-        "Busy Time",
-        "⚠️ That time overlaps with a busy slot",
+        'busy_time'.tr,
+        'time_overlaps_busy_slot'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -256,7 +257,7 @@ class _CircularTimeWheelState extends State<CircularTimeWheel> {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Enter time (HH:mm)'),
+          title: Text('enter_time_title'.tr),
           content: Form(
             key: formKey,
             child: TextFormField(
@@ -284,7 +285,7 @@ class _CircularTimeWheelState extends State<CircularTimeWheel> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr),
             ),
             TextButton(
               onPressed: () {
@@ -292,7 +293,7 @@ class _CircularTimeWheelState extends State<CircularTimeWheel> {
                   Navigator.pop(ctx, true);
                 }
               },
-              child: const Text('OK'),
+              child: Text('ok'.tr),
             ),
           ],
         );
@@ -314,8 +315,8 @@ class _CircularTimeWheelState extends State<CircularTimeWheel> {
 
       if (_isBusy(candidate)) {
         Get.snackbar(
-          "Busy Time",
-          "⚠️ That time overlaps with a busy slot",
+          'busy_time'.tr,
+          'time_overlaps_busy_slot'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -601,8 +602,8 @@ class _Cupertino12hPickerState extends State<Cupertino12hPicker> {
     final dt = _currentSelection();
     if (_isBusy(dt)) {
       Get.snackbar(
-        "Busy Time",
-        "⚠️ That hour overlaps with a busy slot",
+        'busy_time'.tr,
+        'hour_overlaps_busy_slot'.tr,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -701,9 +702,9 @@ class _Cupertino12hPickerState extends State<Cupertino12hPicker> {
                 onSelectedItemChanged: (i) {
                   period = i == 0 ? "AM" : "PM";
                 },
-                children: const [
-                  Center(child: Text("AM")),
-                  Center(child: Text("PM")),
+                children: [
+                  Center(child: Text('am'.tr)),
+                  Center(child: Text('pm'.tr)),
                 ],
               ),
             ),

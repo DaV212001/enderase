@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:enderase/constants/pages.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -142,11 +141,7 @@ Future<void> errorReport(dio.Response<dynamic> response) async {
       } else if (errorMap['error'] == null) {
         errorString = errorMap['message'];
         if (errorMap['status'] == 401) {
-          Get.snackbar(
-            'Error',
-            'Your session has expired, please login again.',
-          );
-          Get.offNamed(AppRoutes.loginRoute);
+          Get.snackbar('Error', errorString);
         }
       }
     } else {

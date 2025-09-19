@@ -1,3 +1,4 @@
+import 'package:enderase/widgets/language_change_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -88,6 +89,12 @@ class _LoginScreenState extends State<LoginScreen>
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.05,
+                      ),
+                      child: LanguageSelectorButton(onChange: () {}),
+                    ),
                     Padding(
                       padding: const EdgeInsetsDirectional.fromSTEB(
                         0,

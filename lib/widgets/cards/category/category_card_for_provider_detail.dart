@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:enderase/setup_files/wrappers/shimmer_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 import '../../../constants/constants.dart';
 
@@ -149,7 +150,7 @@ class CategoryDetailCard extends StatelessWidget {
                                     width:
                                         MediaQuery.of(context).size.width * 0.3,
                                     child: AutoSizeText(
-                                      'Certified',
+                                      'certified'.tr,
                                       maxFontSize: 10,
                                       minFontSize: 4,
                                       style: TextStyle(color: Colors.grey),

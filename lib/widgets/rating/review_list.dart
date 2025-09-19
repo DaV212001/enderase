@@ -17,9 +17,9 @@ class ReviewList extends StatelessWidget {
         );
       }
       if (c.ratings.isEmpty) {
-        return const Padding(
+        return Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text('No reviews yet'),
+          child: Text('no_reviews_yet'.tr),
         );
       }
       return ListView.separated(
@@ -30,12 +30,18 @@ class ReviewList extends StatelessWidget {
         itemBuilder: (ctx, i) {
           final r = c.ratings[i];
           return ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 4,
+            ),
             leading: CircleAvatar(
               backgroundColor: Colors.blue.withOpacity(0.15),
-              child: Text('${r.rating}', style: const TextStyle(color: Colors.blue)),
+              child: Text(
+                '${r.rating}',
+                style: const TextStyle(color: Colors.blue),
+              ),
             ),
-            title: Text(r.comment.isEmpty ? 'No comment' : r.comment),
+            title: Text(r.comment.isEmpty ? 'no_comment'.tr : r.comment),
             subtitle: Text(_format(r.createdAt)),
           );
         },
@@ -53,5 +59,3 @@ class ReviewList extends StatelessWidget {
     }
   }
 }
-
-

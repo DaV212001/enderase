@@ -12,7 +12,9 @@ import '../../../constants/pages.dart';
 import '../../../controllers/theme_mode_controller.dart';
 import '../../../controllers/user_controller.dart';
 import '../../../setup_files/profile_list_card.dart';
+import '../../../setup_files/wrappers/cached_image_widget_wrapper.dart';
 import '../../../widgets/language_change_selector.dart';
+import '../../../widgets/logout_confirmation_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -23,6 +25,13 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   List<Map<String, dynamic>> routesList = [
+    {
+      'name': 'edit_profile',
+      'icon': Ionicons.person_circle,
+      'onTap': () => Get.toNamed(AppRoutes.profileRoute),
+      'isFirstTile': true,
+      'isLastTile': false,
+    },
     // {
     //   'name': 'my_wallet'.tr,
     //   'icon': EneftyIcons.wallet_2_bold,
@@ -34,7 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'name': 'help_support',
       'icon': Ionicons.help_circle,
       'onTap': () {},
-      'isFirstTile': true,
+      'isFirstTile': false,
       'isLastTile': false,
     },
     {
@@ -132,8 +141,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       color: Colors.white,
                                     ),
                               textBuilder: (value) => value
-                                  ? const Center(child: Text('Light'))
-                                  : const Center(child: Text('Dark')),
+                                  ? Center(child: Text('light'.tr))
+                                  : Center(child: Text('dark'.tr)),
                             ),
                           ),
                         ],
@@ -150,13 +159,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                EneftyIcons.profile_circle_bold,
-                                color: !ThemeModeController.isLightTheme.value
-                                    ? AppConstants.primaryColor
-                                    : Colors.white,
-                                size: MediaQuery.of(context).size.width * 0.2,
+                              cachedNetworkImageWrapper(
+                                imageUrl:
+                                    UserController.user.value.profilePicture ??
+                                    '',
+                                height: MediaQuery.of(context).size.width * 0.2,
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                imageBuilder: (context, imageProvider) =>
+                                    CircularImageHolder(
+                                      image: Image.network(
+                                        UserController
+                                                .user
+                                                .value
+                                                .profilePicture ??
+                                            '',
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                            0.2,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                            0.2,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                placeholderBuilder: (context, string) {
+                                  return Icon(
+                                    EneftyIcons.profile_circle_bold,
+                                    color:
+                                        !ThemeModeController.isLightTheme.value
+                                        ? AppConstants.primaryColor
+                                        : Colors.white,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                  );
+                                },
+                                errorWidgetBuilder: (context, path, obj) {
+                                  return Icon(
+                                    EneftyIcons.profile_circle_bold,
+                                    color:
+                                        !ThemeModeController.isLightTheme.value
+                                        ? AppConstants.primaryColor
+                                        : Colors.white,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                  );
+                                },
                               ),
+                              // Icon(
+                              //   EneftyIcons.profile_circle_bold,
+                              //   color: !ThemeModeController.isLightTheme.value
+                              //       ? AppConstants.primaryColor
+                              //       : Colors.white,
+                              //   size: MediaQuery.of(context).size.width * 0.2,
+                              // ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -251,8 +306,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    ConfigPreference.logOut();
-                    Get.offAllNamed(AppRoutes.mainLayoutRoute);
+                    showDialog(
+                      context: context,
+                      builder: (context) => const LogoutConfirmationDialog(),
+                    );
                   },
                   child: Text(
                     'logout'.tr,

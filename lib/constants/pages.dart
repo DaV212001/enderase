@@ -27,6 +27,8 @@ import '../config/storage_config.dart';
 import '../screen/auth/signin_screen.dart';
 import '../screen/auth/signup_screen.dart';
 import '../screen/main/main_layout_screen.dart';
+import '../screen/main/profile/profile_screen.dart';
+import '../screen/main/terms_and_conditions_screen.dart';
 
 class AppRoutes {
   static String get profileRoute => '/profile';
@@ -52,10 +54,10 @@ class AppRoutes {
 
 class Pages {
   static final List<GetPage> pages = [
-    // GetPage(
-    //   name: AppRoutes.profileRoute,
-    //   page: () => const ProfileScreen(),
-    // ),
+    GetPage(
+      name: AppRoutes.profileRoute,
+      page: () => const ProfileScreen(),
+    ),
     // GetPage(
     //   name: AppRoutes.forgotPasswordRoute,
     //   page: () => const ForgotPasswordScreen(),
@@ -64,10 +66,10 @@ class Pages {
     //   name: AppRoutes.changePasswordRoute,
     //   page: () => const ChangePasswordScreen(),
     // ),
-    // GetPage(
-    //   name: AppRoutes.termsAndConditionsRoute,
-    //   page: () => const TermsAndConditionsScreen(),
-    // ),
+    GetPage(
+      name: AppRoutes.termsAndConditionsRoute,
+      page: () => const TermsAndConditionsScreen(),
+    ),
     // GetPage(
     //   name: AppRoutes.privacyPolicyRoute,
     //   page: () => const PrivacyPolicyScreen(),

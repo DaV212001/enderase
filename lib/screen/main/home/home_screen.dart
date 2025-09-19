@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
         // shadowColor: Colors.white,
         foregroundColor: Theme.of(context).scaffoldBackgroundColor,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text('Enderase'),
+        title: Text('MATIF'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),

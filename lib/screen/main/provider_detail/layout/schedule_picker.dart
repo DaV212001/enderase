@@ -97,6 +97,20 @@ class ScheduleController extends GetxController {
     }
   }
 
+  DateTime parseAsLocal(String isoString) {
+    // Parse as UTC
+    final utc = DateTime.parse(isoString);
+    // Reconstruct as local wall-clock (drop UTC meaning)
+    return DateTime(
+      utc.year,
+      utc.month,
+      utc.day,
+      utc.hour,
+      utc.minute,
+      utc.second,
+    );
+  }
+
   Future<void> fetchProviderAvailability(
     int providerId, {
     DateTime? startDate,
@@ -120,8 +134,8 @@ class ScheduleController extends GetxController {
             times.forEach((dateStr, dateData) {
               final busyList = dateData['busy'] as List;
               for (var busy in busyList) {
-                final start = DateTime.parse(busy['start']).toLocal();
-                final end = DateTime.parse(busy['end']).toLocal();
+                final start = parseAsLocal(busy['start']);
+                final end = parseAsLocal(busy['end']);
                 providerBusyTimes.add(DateTimeRange(start: start, end: end));
               }
             });
@@ -130,7 +144,7 @@ class ScheduleController extends GetxController {
           }
         },
         onFailure: (error, response) {
-          Get.snackbar('Error', 'Failed to fetch provider availability');
+          Get.snackbar('error'.tr, 'unexpected_error'.tr);
         },
       );
     } finally {
@@ -349,7 +363,7 @@ class ScheduleController extends GetxController {
     if (oneTimeEnd.value != null &&
         oneTimeEnd.value!.isBefore(pickedDateTime!)) {
       Get.snackbar(
-        'Error',
+        'error'.tr,
         'Start time cannot be after end time',
         colorText: Colors.white,
         backgroundColor: Colors.red,
@@ -630,7 +644,7 @@ class SchedulePicker extends StatelessWidget {
                         Expanded(
                           child: _buildBookingTypeOption(
                             context,
-                            "One-Time",
+                            'one_time'.tr,
                             'one_time',
                             Icons.calendar_today,
                           ),
@@ -638,7 +652,7 @@ class SchedulePicker extends StatelessWidget {
                         Expanded(
                           child: _buildBookingTypeOption(
                             context,
-                            "Recurring",
+                            'recurring'.tr,
                             'recurring',
                             Icons.repeat,
                           ),
@@ -646,7 +660,7 @@ class SchedulePicker extends StatelessWidget {
                         Expanded(
                           child: _buildBookingTypeOption(
                             context,
-                            "Full-Time",
+                            'full_time'.tr,
                             'full_time',
                             Icons.work,
                           ),
@@ -672,7 +686,7 @@ class SchedulePicker extends StatelessWidget {
                           Obx(
                             () => _buildDatePickerField(
                               context,
-                              label: "Start Date",
+                              label: 'start_date'.tr,
                               value: controller.startDate.value,
                               onTap: () =>
                                   _selectDate(context, isStartDate: true),
@@ -683,7 +697,7 @@ class SchedulePicker extends StatelessWidget {
                             () => controller.indefinite.value
                                 ? Row(
                                     children: [
-                                      const Text("Indefinite"),
+                                      Text('indefinite'.tr),
                                       const Spacer(),
                                       Switch(
                                         value: controller.indefinite.value,
@@ -697,7 +711,7 @@ class SchedulePicker extends StatelessWidget {
                                       Obx(
                                         () => _buildDatePickerField(
                                           context,
-                                          label: "End Date",
+                                          label: 'end_date'.tr,
                                           value: controller.endDate.value,
                                           onTap: () => _selectDate(
                                             context,
@@ -715,9 +729,7 @@ class SchedulePicker extends StatelessWidget {
                                                 controller.indefinite.value =
                                                     true,
                                             icon: Icon(Ionicons.infinite),
-                                            label: const Text(
-                                              "Set as indefinite",
-                                            ),
+                                            label: Text('set_as_indefinite'.tr),
                                           ),
                                         ),
                                     ],
@@ -837,7 +849,7 @@ class SchedulePicker extends StatelessWidget {
         child: Text(
           value != null
               ? DateFormat("MMM d, yyyy").format(value)
-              : "Select date",
+              : 'select_date'.tr,
           style: TextStyle(color: value != null ? Colors.black : Colors.grey),
         ),
       ),
@@ -874,7 +886,7 @@ class SchedulePicker extends StatelessWidget {
                 Text(
                   value != null
                       ? DateFormat("MMM d, yyyy 'at' HH:mm").format(value)
-                      : "Select $label date & time",
+                      : "select_$label".tr,
                   style: TextStyle(
                     color: value != null ? Colors.black : Colors.grey[500],
                   ),
@@ -1011,10 +1023,6 @@ class SchedulePicker extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "Select the start and end time for your one-time booking",
-                  textAlign: TextAlign.center,
-                ),
                 const SizedBox(height: 16),
 
                 // Start time selection
@@ -1037,7 +1045,7 @@ class SchedulePicker extends StatelessWidget {
                         backgroundColor: Colors.grey[400],
                       ),
                       Container(width: 2, height: 20, color: Colors.grey[300]),
-                      Text("to", style: TextStyle(color: Colors.grey[600])),
+                      Text('to'.tr, style: TextStyle(color: Colors.grey[600])),
                       Container(width: 2, height: 20, color: Colors.grey[300]),
                       CircleAvatar(
                         radius: 4,
@@ -1087,7 +1095,7 @@ class SchedulePicker extends StatelessWidget {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              "Duration: $durationText",
+                              "${'duration'.tr}: $durationText",
                               style: TextStyle(
                                 color: hasConflict ? Colors.red : Colors.grey,
                                 fontWeight: FontWeight.w500,
@@ -1098,7 +1106,7 @@ class SchedulePicker extends StatelessWidget {
                         if (hasConflict) ...[
                           const SizedBox(height: 6),
                           Text(
-                            '⚠️ Provider is busy during the selected period on:',
+                            'provider_busy'.tr,
                             style: TextStyle(
                               color: Colors.red[600],
                               fontSize: 12,
@@ -1131,7 +1139,7 @@ class SchedulePicker extends StatelessWidget {
   }
 
   String formatDuration(DateTime start, DateTime end) {
-    if (end.isBefore(start)) return "Invalid";
+    if (end.isBefore(start)) return 'invalid'.tr;
 
     int years = end.year - start.year;
     int months = end.month - start.month;
@@ -1205,20 +1213,17 @@ class SchedulePicker extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Frequency",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text('frequency'.tr, style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               value: controller.frequency.value,
               onChanged: (v) {
                 if (v != null) controller.frequency.value = v;
               },
-              items: const [
-                DropdownMenuItem(value: "daily", child: Text("Daily")),
-                DropdownMenuItem(value: "weekly", child: Text("Weekly")),
-                DropdownMenuItem(value: "monthly", child: Text("Monthly")),
+              items: [
+                DropdownMenuItem(value: 'daily', child: Text('daily'.tr)),
+                DropdownMenuItem(value: 'weekly', child: Text('weekly'.tr)),
+                DropdownMenuItem(value: 'monthly', child: Text('monthly'.tr)),
               ],
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
@@ -1249,8 +1254,8 @@ class SchedulePicker extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              "Repeat every",
+            Text(
+              'repeat_every'.tr,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -1335,11 +1340,11 @@ class SchedulePicker extends StatelessWidget {
   String _getIntervalText(String frequency, int interval) {
     switch (frequency) {
       case 'daily':
-        return interval == 1 ? 'day' : 'days';
+        return interval == 1 ? 'day'.tr : 'days'.tr;
       case 'weekly':
-        return interval == 1 ? 'week' : 'weeks';
+        return interval == 1 ? 'week'.tr : 'weeks'.tr;
       case 'monthly':
-        return interval == 1 ? 'month' : 'months';
+        return interval == 1 ? 'month'.tr : 'months'.tr;
       default:
         return '';
     }
@@ -1358,14 +1363,14 @@ class SchedulePicker extends StatelessWidget {
         Obx(() {
           // For full-time, show a message that all days are included
           if (controller.bookingType.value == 'full_time') {
-            return const Text(
-              "Full-time includes all days of the week with default working hours",
+            return Text(
+              'full_time_includes_all_days'.tr,
               style: TextStyle(color: Colors.grey, fontSize: 10),
             );
           }
 
-          return const Text(
-            "Selected days and their time slots",
+          return Text(
+            'selected_days_and_time_slots'.tr,
             style: TextStyle(fontWeight: FontWeight.bold),
           );
         }),
@@ -1375,14 +1380,14 @@ class SchedulePicker extends StatelessWidget {
               controller.bookingType.value != 'full_time') {
             return NoWindowsSelected(controller: controller);
           }
-          final weekdays = const [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday',
+          final weekdays = [
+            'monday'.tr,
+            'tuesday'.tr,
+            'wednesday'.tr,
+            'thursday'.tr,
+            'friday'.tr,
+            'saturday'.tr,
+            'sunday'.tr,
           ];
           return Column(
             children: [
@@ -1511,7 +1516,7 @@ class SchedulePicker extends StatelessWidget {
                                           );
                                           if (err != null) {
                                             Get.snackbar(
-                                              "Invalid",
+                                              'invalid'.tr,
                                               err,
                                               backgroundColor: Colors.red,
                                               colorText: Colors.white,
@@ -1527,7 +1532,7 @@ class SchedulePicker extends StatelessWidget {
                                       },
                                       child: InputDecorator(
                                         decoration: InputDecoration(
-                                          labelText: "Start Time",
+                                          labelText: 'start_time'.tr,
                                           enabledBorder: OutlineInputBorder(
                                             borderSide: const BorderSide(
                                               color: Colors.white,
@@ -1573,18 +1578,20 @@ class SchedulePicker extends StatelessWidget {
                                                 horizontal: 12,
                                                 vertical: 8,
                                               ),
-                                          errorText: startBusy ? "Busy" : null,
+                                          errorText: startBusy
+                                              ? 'busy'.tr
+                                              : null,
                                           enabled: !startBusy,
                                         ),
                                         child: Text(window["start"]!),
                                       ),
                                     ),
                                   ),
-                                  const Padding(
+                                  Padding(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 8.0,
                                     ),
-                                    child: Text('to'),
+                                    child: Text('to'.tr),
                                   ),
                                   // End time
                                   Expanded(
@@ -1639,7 +1646,7 @@ class SchedulePicker extends StatelessWidget {
                                           );
                                           if (err != null) {
                                             Get.snackbar(
-                                              "Invalid",
+                                              'invalid'.tr,
                                               err,
                                               backgroundColor: Colors.red,
                                               colorText: Colors.white,
@@ -1655,7 +1662,7 @@ class SchedulePicker extends StatelessWidget {
                                       },
                                       child: InputDecorator(
                                         decoration: InputDecoration(
-                                          labelText: "End Time",
+                                          labelText: 'end_time'.tr,
                                           enabledBorder: OutlineInputBorder(
                                             borderSide: const BorderSide(
                                               color: Colors.white,
@@ -1701,7 +1708,7 @@ class SchedulePicker extends StatelessWidget {
                                                 horizontal: 12,
                                                 vertical: 8,
                                               ),
-                                          errorText: endBusy ? "Busy" : null,
+                                          errorText: endBusy ? 'busy'.tr : null,
                                           enabled: !endBusy,
                                         ),
                                         child: Text(window["end"]!),
@@ -1810,7 +1817,7 @@ class SchedulePicker extends StatelessWidget {
                                 );
                                 if (err != null) {
                                   Get.snackbar(
-                                    "Invalid",
+                                    'invalid'.tr,
                                     err,
                                     backgroundColor: Colors.red,
                                     colorText: Colors.white,
@@ -1824,7 +1831,7 @@ class SchedulePicker extends StatelessWidget {
                               }
                             },
                             icon: const Icon(Icons.add, size: 18),
-                            label: const Text("Add time window"),
+                            label: Text('add_time_window'.tr),
                           ),
                         ),
                         Divider(),
@@ -1842,21 +1849,21 @@ class SchedulePicker extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: () async {
                       // Show a dialog to select a weekday
-                      final weekdays = const [
-                        'Monday',
-                        'Tuesday',
-                        'Wednesday',
-                        'Thursday',
-                        'Friday',
-                        'Saturday',
-                        'Sunday',
+                      final weekdays = [
+                        'monday'.tr,
+                        'tuesday'.tr,
+                        'wednesday'.tr,
+                        'thursday'.tr,
+                        'friday'.tr,
+                        'saturday'.tr,
+                        'sunday'.tr,
                       ];
 
                       final selectedWeekday = await showDialog<int>(
                         context: Get.context!,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text("Select a day of the week"),
+                            title: Text('select_day_of_week'.tr),
                             content: SizedBox(
                               width: double.maxFinite,
                               child: ListView.builder(
@@ -1885,8 +1892,8 @@ class SchedulePicker extends StatelessWidget {
                           selectedWeekday.toString(),
                         )) {
                           Get.snackbar(
-                            "Day already selected",
-                            "This day has already been selected",
+                            'day_already_selected'.tr,
+                            'this_day_already_selected'.tr,
                             backgroundColor: Colors.red,
                             colorText: Colors.white,
                           );
@@ -1962,7 +1969,7 @@ class SchedulePicker extends StatelessWidget {
                           );
                           if (err != null) {
                             Get.snackbar(
-                              "Invalid",
+                              'invalid'.tr,
                               err,
                               backgroundColor: Colors.red,
                               colorText: Colors.white,
@@ -1977,7 +1984,7 @@ class SchedulePicker extends StatelessWidget {
                       }
                     },
                     icon: const Icon(Icons.add, size: 18),
-                    label: const Text("Add day"),
+                    label: Text('add_day'.tr),
                   ),
                 ),
             ],
@@ -2060,31 +2067,28 @@ class NoWindowsSelected extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-          "No days selected yet",
-          style: TextStyle(color: Colors.grey),
-        ),
+        Text('no_days_selected_yet'.tr, style: TextStyle(color: Colors.grey)),
         const SizedBox(height: 16),
         Align(
           alignment: Alignment.centerRight,
           child: TextButton.icon(
             onPressed: () async {
               // Show a dialog to select a weekday
-              final weekdays = const [
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday',
+              final weekdays = [
+                'monday'.tr,
+                'tuesday'.tr,
+                'wednesday'.tr,
+                'thursday'.tr,
+                'friday'.tr,
+                'saturday'.tr,
+                'sunday'.tr,
               ];
 
               final selectedWeekday = await showDialog<int>(
                 context: Get.context!,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text("Select a day of the week"),
+                    title: Text('select_day_of_week'.tr),
                     content: SizedBox(
                       width: double.maxFinite,
                       child: ListView.builder(
@@ -2113,8 +2117,8 @@ class NoWindowsSelected extends StatelessWidget {
                   selectedWeekday.toString(),
                 )) {
                   Get.snackbar(
-                    "Day already selected",
-                    "This day has already been selected",
+                    'day_already_selected'.tr,
+                    'this_day_already_selected'.tr,
                     backgroundColor: Colors.red,
                     colorText: Colors.white,
                   );
@@ -2189,7 +2193,7 @@ class NoWindowsSelected extends StatelessWidget {
                   );
                   if (err != null) {
                     Get.snackbar(
-                      "Invalid",
+                      'invalid'.tr,
                       err,
                       backgroundColor: Colors.red,
                       colorText: Colors.white,
@@ -2204,7 +2208,7 @@ class NoWindowsSelected extends StatelessWidget {
               }
             },
             icon: const Icon(Icons.add, size: 18),
-            label: const Text("Add day"),
+            label: Text('add_day'.tr),
           ),
         ),
       ],

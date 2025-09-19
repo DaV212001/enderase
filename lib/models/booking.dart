@@ -36,12 +36,15 @@ class Booking {
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     // Pull nested objects if present
-    final Map<String, dynamic>? schedule =
-        json['schedule'] != null ? Map<String, dynamic>.from(json['schedule']) : null;
-    final Map<String, dynamic>? provider =
-        json['provider'] != null ? Map<String, dynamic>.from(json['provider']) : null;
-    final Map<String, dynamic>? category =
-        json['category'] != null ? Map<String, dynamic>.from(json['category']) : null;
+    final Map<String, dynamic>? schedule = json['schedule'] != null
+        ? Map<String, dynamic>.from(json['schedule'])
+        : null;
+    final Map<String, dynamic>? provider = json['provider'] != null
+        ? Map<String, dynamic>.from(json['provider'])
+        : null;
+    final Map<String, dynamic>? category = json['category'] != null
+        ? Map<String, dynamic>.from(json['category'])
+        : null;
 
     // Prefer schedule one-time fields when available
     String? startTime;
@@ -73,7 +76,7 @@ class Booking {
           ? Map<String, dynamic>.from(json['meta'])
           : null,
       status: json['status'],
-      createdAt: json['created_at'],
+      createdAt: json['schedule']['created_at'],
       updatedAt: json['updated_at'],
       schedule: schedule,
       provider: provider,
@@ -166,6 +169,10 @@ class Booking {
 
   String get categoryDisplayName {
     if (category == null) return (categoryId ?? '').toString();
-    return (category!['category'] ?? '').toString();
+    if (Get.locale!.languageCode == 'en') {
+      return category!['category'] ?? '';
+    } else {
+      return category!['category_am'] ?? '';
+    }
   }
 }

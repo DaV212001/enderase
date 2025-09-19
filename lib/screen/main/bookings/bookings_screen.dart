@@ -86,7 +86,14 @@ class BookingsScreen extends StatelessWidget {
               onTap: () {
                 Get.toNamed(
                   AppRoutes.bookingDetailRoute,
-                  arguments: booking.id,
+                  arguments: {
+                    'id': booking.id,
+                    'providerName': booking.providerDisplayName,
+                    'categoryName': booking.categoryDisplayName,
+                    'avatar': booking.provider != null
+                        ? booking.provider!['profile_picture']
+                        : null,
+                  },
                 );
               },
               child: BookingCard(booking: booking, isShimmer: false),

@@ -23,7 +23,7 @@ class CategorySelection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'Select the occupation you want to book this provider for:',
+                'select_occupation'.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),

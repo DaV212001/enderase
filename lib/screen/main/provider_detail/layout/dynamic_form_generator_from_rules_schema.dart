@@ -59,6 +59,7 @@ class _DynamicFormState extends State<DynamicForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(height: 10),
                     // const Text(
                     //   'Job Details',
                     //   textAlign: TextAlign.center,
@@ -162,7 +163,7 @@ class _DynamicFormState extends State<DynamicForm> {
                             validator: (val) {
                               if (rule.isRequired &&
                                   (val == null || val.isEmpty)) {
-                                return "Required";
+                                return "required".tr;
                               }
                               return null;
                             },
@@ -190,10 +191,12 @@ class _DynamicFormState extends State<DynamicForm> {
                           validator: (list) {
                             final count = list?.length ?? 0;
                             if (rule.isRequired && count == 0) {
-                              return "Required";
+                              return "required".tr;
                             }
                             if (rule.min != null && count < rule.min!) {
-                              return "Select at least ${rule.min}";
+                              return 'select_at_least'.trParams({
+                                'min': rule.min.toString(),
+                              });
                             }
                             return null;
                           },
@@ -266,11 +269,11 @@ class _DynamicFormState extends State<DynamicForm> {
                           textEditingController: controller,
                           focusNode: FocusNode(),
                           obscureText: false,
-                          label: "${rule.label} (comma separated)",
+                          label: "${rule.label} ${'comma_separated'.tr}",
                           validator: (val) {
                             if (rule.isRequired &&
                                 (val == null || val.isEmpty)) {
-                              return "Required";
+                              return "required".tr;
                             }
                             final items = (val ?? '')
                                 .split(',')
@@ -279,12 +282,16 @@ class _DynamicFormState extends State<DynamicForm> {
                                 .toList();
 
                             if (rule.min != null && items.length < rule.min!) {
-                              return "Enter at least ${rule.min} item(s)";
+                              return 'select_at_least'.trParams({
+                                'min': rule.min.toString(),
+                              });
                             }
                             final itemMax = itemRule?.maxLength;
                             if (itemMax != null &&
                                 items.any((s) => s.length > itemMax)) {
-                              return "Each item max length is $itemMax";
+                              return "each_item_max".trParams({
+                                'item_max': itemMax.toString(),
+                              });
                             }
                             return null;
                           },
@@ -333,17 +340,21 @@ class _DynamicFormState extends State<DynamicForm> {
                           validator: (val) {
                             if (rule.isRequired &&
                                 (val == null || val.isEmpty)) {
-                              return "Required";
+                              return "required".tr;
                             }
                             final parsed = int.tryParse(val ?? '');
                             if (parsed == null) {
-                              return "Enter a valid number";
+                              return "invalid_number".tr;
                             }
                             if (rule.min != null && parsed < rule.min!) {
-                              return "Minimum is ${rule.min}";
+                              return 'select_at_least'.trParams({
+                                'min': rule.min.toString(),
+                              });
                             }
                             if (rule.max != null && parsed > rule.max!) {
-                              return "Maximum is ${rule.max}";
+                              return 'max_is'.trParams({
+                                'max': rule.max.toString(),
+                              });
                             }
                             return null;
                           },
@@ -373,12 +384,14 @@ class _DynamicFormState extends State<DynamicForm> {
                         label: rule.label,
                         validator: (val) {
                           if (rule.isRequired && (val == null || val.isEmpty)) {
-                            return "Required";
+                            return "required".tr;
                           }
                           if (rule.maxLength != null &&
                               val != null &&
                               val.length > rule.maxLength!) {
-                            return "Max length is ${rule.maxLength}";
+                            return 'max_is'.trParams({
+                              'max': rule.max.toString(),
+                            });
                           }
                           return null;
                         },
@@ -404,8 +417,8 @@ class _DynamicFormState extends State<DynamicForm> {
                         controller: notesController,
                         onChanged: (val) =>
                             widget.bookingController.notesReceived.value = val,
-                        decoration: const InputDecoration(
-                          labelText: "Additional Notes",
+                        decoration: InputDecoration(
+                          labelText: "additional_notes".tr,
                           border: OutlineInputBorder(),
                         ),
                       ),
