@@ -123,32 +123,59 @@ class ErrorUtil {
 }
 
 Future<void> errorReport(dio.Response<dynamic> response) async {
-  Map errorMap = {};
+  Map<String, dynamic> errorMap = {};
   String errorString = '';
+
   if (response.data is Map) {
-    Logger().d('Map');
-    errorMap = response.data;
+    errorMap = Map<String, dynamic>.from(response.data);
+
+    // Case 1: API returns "errors": [ { message: "..."} ]
     if (errorMap.containsKey('errors')) {
-      Logger().d('List');
       List<dynamic> errorList = errorMap['errors'];
-      for (Map<String, dynamic> error in errorList) {
-        Get.snackbar('Error', error['message']);
+      for (var error in errorList) {
+        if (error is Map && error.containsKey('message')) {
+          Get.snackbar('Error', error['message'].toString());
+        }
       }
-    } else if (errorMap.containsKey('error')) {
-      if (errorMap['error'] is String) {
-        errorString = errorMap['error'];
-        Get.snackbar('Error', errorString);
-      } else if (errorMap['error'] == null) {
-        errorString = errorMap['message'];
+      return;
+    }
+
+    // Case 2: API returns "error": "some string"
+    if (errorMap.containsKey('error')) {
+      final err = errorMap['error'];
+
+      if (err is String) {
+        Get.snackbar('Error', err);
+        return;
+      }
+
+      // Case 3: API returns "error": { field: [messages] }
+      if (err is Map) {
+        err.forEach((field, messages) {
+          if (messages is List) {
+            for (var msg in messages) {
+              Get.snackbar('Error', msg.toString());
+            }
+          }
+        });
+        return;
+      }
+
+      // Case 4: "error" is null → use generic message
+      if (err == null) {
+        errorString = errorMap['message'] ?? 'Unknown error';
         if (errorMap['status'] == 401) {
           Get.snackbar('Error', errorString);
         }
+        return;
       }
-    } else {
-      errorString = (await ErrorUtil.getErrorData(response.toString())).body;
-      Get.snackbar('Error', errorString);
     }
+
+    // Fallback if structure doesn’t match expected
+    errorString = (await ErrorUtil.getErrorData(response.toString())).body;
+    Get.snackbar('Error', errorString);
   } else {
+    // Non-map response fallback
     errorString = (await ErrorUtil.getErrorData(response.toString())).body;
     Get.snackbar('Error', errorString);
   }
