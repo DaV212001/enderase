@@ -150,6 +150,7 @@ Future<void> errorReport(dio.Response<dynamic> response) async {
       }
 
       // Case 3: API returns "error": { field: [messages] }
+      Get.snackbar('Error is Map', '${err is Map}');
       if (err is Map) {
         err.forEach((field, messages) {
           if (messages is List) {
