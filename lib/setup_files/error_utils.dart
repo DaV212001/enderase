@@ -125,7 +125,7 @@ class ErrorUtil {
 Future<void> errorReport(dio.Response<dynamic> response) async {
   Map<String, dynamic> errorMap = {};
   String errorString = '';
-
+Get.snackbar('Error is Map', '${response.data is Map}');
   if (response.data is Map) {
     errorMap = Map<String, dynamic>.from(response.data);
 
