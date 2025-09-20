@@ -7,10 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../../../config/storage_config.dart';
 import '../../../constants/pages.dart';
 import '../../../controllers/theme_mode_controller.dart';
 import '../../../controllers/user_controller.dart';
+import '../../../setup_files/error_logger.dart';
 import '../../../setup_files/profile_list_card.dart';
 import '../../../setup_files/wrappers/cached_image_widget_wrapper.dart';
 import '../../../widgets/language_change_selector.dart';
@@ -65,7 +65,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       'icon': Ionicons.lock_closed,
       'onTap': () {},
       'isFirstTile': false,
+      'isLastTile': false,
+    },
+    {
+      'icon': Ionicons.send,
+      'name': 'Report a bug',
+      'isFirstTile': false,
       'isLastTile': true,
+      'onTap': () async {
+        ErrorLogger.showErrorReportDialog();
+      },
     },
   ];
 

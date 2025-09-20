@@ -5,6 +5,7 @@ import 'package:enderase/models/city.dart';
 import 'package:enderase/models/sub_city.dart';
 import 'package:enderase/setup_files/api_call_status.dart';
 import 'package:enderase/setup_files/error_data.dart';
+import 'package:enderase/setup_files/error_logger.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -186,66 +187,71 @@ class UserController extends GetxController
   }
 
   void signUp() async {
-    if (validateCurrentStep() == false) return;
+    try {
+      if (validateCurrentStep() == false) return;
 
-    final formDataFields = {
-      'first_name': nameController.text.split(' ')[0].trim(),
-      'middle_name': nameController.text.split(' ')[1].trim(),
-      'last_name': nameController.text.split(' ')[2].trim(),
-      'password': passwordSignUpController.text.trim(),
-      'email': emailAddressSignUpController.text.trim(),
-      'fan_number': fanNumberController.text.trim(),
-      'primary_phone': phoneController.text.trim(),
-      'secondary_phone': secondaryPhoneController.text.trim(),
-      'landline_phone': landlinePhoneController.text.trim(),
-      'city_id': selectedCityId.toString().trim(),
-      'subcity_id': selectedSubCityId.toString().trim(),
-      'woreda': int.parse(
-        woredaController.text.trim().isEmpty
-            ? '0'
-            : woredaController.text.trim(),
-      ),
-      'house_number': int.parse(
-        houseNumberController.text.trim().isEmpty
-            ? '0'
-            : houseNumberController.text.trim(),
-      ),
-    };
+      final formDataFields = {
+        'first_name': nameController.text.split(' ')[0].trim(),
+        'middle_name': nameController.text.split(' ')[1].trim(),
+        'last_name': nameController.text.split(' ')[2].trim(),
+        'password': passwordSignUpController.text.trim(),
+        'email': emailAddressSignUpController.text.trim(),
+        'fan_number': fanNumberController.text.trim(),
+        'primary_phone': phoneController.text.trim(),
+        'secondary_phone': secondaryPhoneController.text.trim(),
+        'landline_phone': landlinePhoneController.text.trim(),
+        'city_id': selectedCityId.toString().trim(),
+        'subcity_id': selectedSubCityId.toString().trim(),
+        'woreda': int.parse(
+          woredaController.text.trim().isEmpty
+              ? '0'
+              : woredaController.text.trim(),
+        ),
+        'house_number': int.parse(
+          houseNumberController.text.trim().isEmpty
+              ? '0'
+              : houseNumberController.text.trim(),
+        ),
+      };
 
-    Map<String, dio.MultipartFile>? files = {};
+      Map<String, dio.MultipartFile>? files = {};
 
-    if (profilePhotoFile.value != null) {
-      final fileName = profilePhotoFile.value!.path.split('/').last;
-      files['profile_picture'] = await dio.MultipartFile.fromFile(
-        profilePhotoFile.value!.path,
-        filename: fileName,
+      if (profilePhotoFile.value != null) {
+        final fileName = profilePhotoFile.value!.path.split('/').last;
+        files['profile_picture'] = await dio.MultipartFile.fromFile(
+          profilePhotoFile.value!.path,
+          filename: fileName,
+        );
+      }
+
+      signingUp.value = true;
+
+      await DioService.dioPostFormData(
+        path: "/api/v1/client/auth/signup",
+        formDataFields: formDataFields,
+        files: files,
+        onSuccess: (response) async {
+          final data = response.data;
+
+          String token = data['data']['token'];
+          ConfigPreference.setUserToken(token);
+          ConfigPreference.setUserData(data['data']['client']);
+
+          User userTemp = User.fromJson(data['data']['client']);
+          user.value = userTemp;
+          signingUp.value = false;
+          Get.snackbar('Success', 'You have signed up successfully');
+          Get.offNamed(AppRoutes.mainLayoutRoute);
+        },
+        onFailure: (error, response) async {
+          signingUp.value = false;
+          await errorReport(response);
+        },
       );
+    } catch (e, s) {
+      Logger().t(e, stackTrace: s);
+      ErrorLogger.logError(e, s);
     }
-
-    signingUp.value = true;
-
-    await DioService.dioPostFormData(
-      path: "/api/v1/client/auth/signup",
-      formDataFields: formDataFields,
-      files: files,
-      onSuccess: (response) async {
-        final data = response.data;
-
-        String token = data['data']['token'];
-        ConfigPreference.setUserToken(token);
-        ConfigPreference.setUserData(data['data']['client']);
-
-        User userTemp = User.fromJson(data['data']['client']);
-        user.value = userTemp;
-        signingUp.value = false;
-        Get.snackbar('Success', 'You have signed up successfully');
-        Get.offNamed(AppRoutes.mainLayoutRoute);
-      },
-      onFailure: (error, response) async {
-        signingUp.value = false;
-        await errorReport(response);
-      },
-    );
   }
 
   void logIn() async {

@@ -1,10 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 
 import '../constants/assets.dart';
 import 'error_data.dart';
+import 'error_logger.dart';
 
 class ErrorUtil {
   /// Returns an [ErrorData] object based on the provided [error] string.
@@ -123,9 +123,10 @@ class ErrorUtil {
 }
 
 Future<void> errorReport(dio.Response<dynamic> response) async {
+  ErrorLogger.logError(response.statusCode, response.data);
   Map<String, dynamic> errorMap = {};
   String errorString = '';
-Get.snackbar('Error is Map', '${response.data is Map}');
+  // Get.snackbar('Error is Map', '${response.data is Map}');
   if (response.data is Map) {
     errorMap = Map<String, dynamic>.from(response.data);
 
@@ -150,7 +151,6 @@ Get.snackbar('Error is Map', '${response.data is Map}');
       }
 
       // Case 3: API returns "error": { field: [messages] }
-      Get.snackbar('Error is Map', '${err is Map}');
       if (err is Map) {
         err.forEach((field, messages) {
           if (messages is List) {

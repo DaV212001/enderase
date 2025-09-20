@@ -1,4 +1,5 @@
 import 'package:enderase/setup_files/animated_widgets/loading_animation_dropdown.dart';
+import 'package:enderase/setup_files/error_logger.dart';
 import 'package:enderase/setup_files/templates/loaded_widgets_template.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,11 +54,27 @@ class SignUpScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height,
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.05,
-                        ),
-                        child: LanguageSelectorButton(onChange: () {}),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.05,
+                            ),
+                            child: LanguageSelectorButton(onChange: () {}),
+                          ),
+                          GestureDetector(
+                            onTap: () => ErrorLogger.shareErrorLogs(),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.05,
+                                right: 16,
+                              ),
+                              child: Icon(Icons.share, color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 70),
                       Padding(
@@ -434,6 +451,7 @@ class SignUpScreen extends StatelessWidget {
               focusNode: signUpController.woredaFocusNode2,
               label: 'woreda'.tr,
               obscureText: false,
+              textInputType: TextInputType.number,
               passwordInput: false,
               validator: (v) {
                 if (v!.isEmpty) {
@@ -446,6 +464,7 @@ class SignUpScreen extends StatelessWidget {
               textEditingController: signUpController.houseNumberController,
               focusNode: signUpController.houseNumberFocusNode2,
               label: 'house_number'.tr,
+              textInputType: TextInputType.number,
               obscureText: false,
               passwordInput: false,
               validator: (v) {
